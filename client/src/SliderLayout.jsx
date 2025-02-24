@@ -7,17 +7,16 @@ import { Outlet } from 'react-router-dom'
 function SliderLayout() {
   return (
     <>
-    <Header/>
-    {/* <div className='flex'>
+      <Header />
+      {/* <div className='flex'>
     <div className='w-full'><Sidebar/></div>
     <div className='w-fit'><Outlet/></div>
     </div> */}
-    <div className='flex'>
-    <div className='w-[15%]'><Sidebar /></div>
-    <div className='flex-1'><Outlet /></div>
-</div>
-
-    <Footer/>
+      <div className='flex'>
+        <div className='w-[15%]'><Sidebar /></div>
+        <div className='flex-1'><Outlet /></div>
+      </div>
+      <Footer />
     </>
   )
 }

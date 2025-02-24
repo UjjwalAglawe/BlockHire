@@ -9,7 +9,7 @@ function Layout() {
     <>
     <Header/>
     <Outlet/>
-    <Chatbot/>
+    {/* <Chatbot/> */}
     <Footer/>
    
     </>
