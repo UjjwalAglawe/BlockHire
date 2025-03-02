@@ -1,0 +1,6 @@
+# Enforce LF for all text files
+* text=auto eol=lf
+
+# Keep Windows batch files and shell scripts in correct format
+*.sh eol=lf
+*.bat eol=crlf
