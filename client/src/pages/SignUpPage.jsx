@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from "react-router-dom"
 import axios from 'axios';
+import OAuth from '../Components/OAuth/OAuth';
 //import OAuth from '../components/OAuth';
 
 const SignUpPage = () => {
@@ -194,7 +195,7 @@ const SignUpPage = () => {
                         Sign Up
                     </button>
 
-                    {/* <OAuth/> */}
+                    <OAuth/>
 
                     <div className="text-center text-sm text-gray-600">
                         Already have an account?{' '}

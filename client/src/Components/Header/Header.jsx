@@ -43,7 +43,7 @@ export default function Header() {
                             </Link>) :
                             (<div className="flex items-center lg:order-2 font-title">
                                 <Link
-                                    to="/login"
+                                    to="/signin"
                                     className="text-white bg-primary  hover:bg-secondary hover:transition-colors hover:duration-300 hover:text-black focus:ring-2 focus:ring-black font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 focus:outline-none hover:shadow-2xl transform hover:scale-105 transition duration-200  hover:border-black"
                                 >
                                     Log in

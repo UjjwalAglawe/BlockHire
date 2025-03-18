@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
+import OAuth from '../Components/OAuth/OAuth';
 //import OAuth from "../Components/OAuth"
 
 const SignInPage = () => {
@@ -128,7 +129,7 @@ const SignInPage = () => {
                         Sign In
                     </button>
 
-                    {/* <OAuth/> */}
+                    <OAuth/>
 
                     <div className="text-center text-sm text-gray-600 pt-4">
                         Don't have an account?{' '}
