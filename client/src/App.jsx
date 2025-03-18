@@ -43,7 +43,7 @@ function App() {
         <Route path='contract' element={<ContractPage />} />
       </Route>
 
-      <Route path='login' element={<SignInPage/>}/>
+      <Route path='signin' element={<SignInPage/>}/>
       <Route path='freelancerRegister' element={<FreelancerRegister />} />
       <Route path='signup' element={<SignUpPage/>} />
     </Routes>

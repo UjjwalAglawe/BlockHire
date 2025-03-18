@@ -22,9 +22,9 @@ app.use((error, req, res, next) => {
     });
 });
 
-// const authRoute = require('./routes/auth.route');
+const authRoute = require('./routes/auth.routes');
 
-// app.use("/auth", authRoute)
+app.use("/api/auth", authRoute)
 
 app.listen(4000, ()=>{
     console.log("Listening to 4000!")
