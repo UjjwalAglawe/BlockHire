@@ -3,7 +3,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 function Information() {
-    const active = useSelector((state) => state.signup.active);
+    //const active = useSelector((state) => state.signup.active);
     return (
         <div>
             <div className="flex flex-col justify-between items-center font-title bg-gray-50 py-3">
@@ -122,7 +122,7 @@ function Information() {
 
             </div>
 
-            {
+            {/* {
                 active==true ? null :(
                     <div className='flex justify-center items-center'>
                     <Link
@@ -133,7 +133,7 @@ function Information() {
                     </Link>
                 </div>
                 )
-            }
+            } */}
         </div>
     );
 }

@@ -26,7 +26,7 @@ import SliderLayout from './SliderLayout.jsx'
 
 import { Provider } from 'react-redux'
 import { PersistGate } from "redux-persist/integration/react";
-import store, { persistor } from "./reducer/store"
+import { persistor, store } from './reducer/store.js'
 
 // const router = createBrowserRouter(
 //   createRoutesFromElements(

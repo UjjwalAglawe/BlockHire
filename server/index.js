@@ -10,7 +10,17 @@ app.use(cookieParser())
 // dbConnect();
 
 const cors = require('cors');
-app.use(cors());
+
+app.use(cors({
+  origin: 'http://localhost:5173', // Frontend URL
+  credentials: true,
+}));
+
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+  next();
+});
 
 app.use((error, req, res, next) => {
     const statusCode = error.statusCode || 500;
