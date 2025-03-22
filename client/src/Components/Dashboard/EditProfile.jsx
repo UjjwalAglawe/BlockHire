@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import { useSelector,useDispatch } from 'react-redux';
-import {  
-  updateUserInfoField,
-  addItemToArray,
-  updateItemInArray,
-  deleteItemFromArray, } from '../../reducer/signupSlice';
+// import {  
+//   updateUserInfoField,
+//   addItemToArray,
+//   updateItemInArray,
+//   deleteItemFromArray, } from '../../reducer/user/userSlice';
 
 const EditProfile = () => {
   //client store.js sigup
-  const client = useSelector((state)=> state.signup.client);
+  //const client = useSelector((state)=> state.signup.client);
   const dispatch = useDispatch();
 
-  const { username, location, aboutMe, occupation, skills, languages } = useSelector(
-    (state) => state.signup.signup.userInfo
-  );
+  // const { username, location, aboutMe, occupation, skills, languages } = useSelector(
+  //   (state) => state.signup.signup.userInfo
+  // );
 
   const [profileImage, setProfileImage] = useState('/ProfileImages/professional_img2.jpg');
 
@@ -37,22 +37,22 @@ const EditProfile = () => {
 
   const handleAddItem = (field, currentItem, setCurrentItem) => {
     if (currentItem.trim() !== '') {
-      dispatch(addItemToArray({ field, item: currentItem }));
+      //dispatch(addItemToArray({ field, item: currentItem }));
       setCurrentItem('');
     }
   };
 
   const handleUpdateItem = (field, index, value) => {
-    dispatch(updateItemInArray({ field, index, value }));
+    //dispatch(updateItemInArray({ field, index, value }));
   };
 
   const handleDeleteItem = (field, index) => {
-    dispatch(deleteItemFromArray({ field, index }));
+    //dispatch(deleteItemFromArray({ field, index }));
   };
 
   ///////////////////////////////////////////////////////
   const handleInChange = (field, value) => {
-    dispatch(updateUserInfoField({ field, value }));
+    //dispatch(updateUserInfoField({ field, value }));
   };
 
   // const renderDynamicInputList = (title, items, setItems, currentItem, setCurrentItem) => (

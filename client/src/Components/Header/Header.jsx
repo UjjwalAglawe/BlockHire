@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import SearchForm from './SearchForm';
 import {  useSelector } from 'react-redux';
@@ -6,7 +6,11 @@ import ConnectMetaMask from '../Metamask/ConnectMetamask';
 
 export default function Header() {
     const location = useLocation();
-    const active = useSelector((state) => state.signup.active);
+
+    const {currentUser} = useSelector((state)=> state.user)
+
+
+    //const active = useSelector((state) => state.signup.active);
     //const email = useSelector((state) => state.signup.signup.userInfo.email)
     // console.log(active)
 
@@ -23,7 +27,7 @@ export default function Header() {
                         <h1 className="text-3xl text-primary font-extrabold font mb-4 ">BlockHire</h1>
                     </Link>
                     {
-                        active == true ?
+                        currentUser ?
                             (<Link to="/profile" className="flex flex-col items-center gap-4 lg:order-2 font-title text-gray-800">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -39,7 +43,7 @@ export default function Header() {
                                         d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
                                     />
                                 </svg>
-                                {/* <h4 className="text-sm font-semibold text-gray-400">{email}</h4> */}
+                                {/* { <h4 className="text-sm font-semibold text-gray-400">{email}</h4> } */}
                             </Link>) :
                             (<div className="flex items-center lg:order-2 font-title">
                                 <Link

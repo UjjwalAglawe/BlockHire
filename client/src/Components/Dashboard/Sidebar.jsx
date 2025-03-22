@@ -2,7 +2,7 @@ import React from 'react'
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { resetSignupState } from '../../reducer/signupSlice';
+//import { resetSignupState } from '../../reducer/user/userSlice';
 import { persistor } from '../../reducer/store';
 
 function Sidebar() {
@@ -14,7 +14,7 @@ function Sidebar() {
     const handleLogout = () => {
         let logout = confirm("Do you want to logout ?")
         if (logout) {
-            dispatch(resetSignupState());  // Reset Redux state
+            //dispatch(resetSignupState());  // Reset Redux state
             persistor.purge();
             navigate("/");
             console.log("Logout!!!")

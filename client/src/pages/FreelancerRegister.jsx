@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector,useDispatch } from 'react-redux';
-import { updateClient } from '../reducer/signupSlice';
+//import { updateClient } from '../reducer/user/userSlice';
 
 function FreelancerRegister() {
   // "client" is selected by default
-  const client = useSelector((state)=> state.signup.client);
+  //const client = useSelector((state)=> state.signup.client);
   const [selectedOption, setSelectedOption] = useState(client);
   const dispatch = useDispatch();
 
   const handleCheckboxChange = (option) => {
     setSelectedOption(option);
     //Here i want to update client state only , how can  i do
-    dispatch(updateClient(option));
+    //dispatch(updateClient(option));
 
   };
 
