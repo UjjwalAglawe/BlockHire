@@ -10,7 +10,7 @@ const SignUpPage = () => {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
-        username: '',
+        name: '',
         email: '',
         password: '',
         confirmPassword: ''
@@ -31,7 +31,7 @@ const SignUpPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
     
-        if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
+        if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
             setError('Please fill in all fields');
             return;
         }
@@ -89,17 +89,17 @@ const SignUpPage = () => {
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
                         <label
-                            htmlFor="username"
+                            htmlFor="name"
                             className="block text-sm font-medium text-gray-700"
                         >
-                            Username
+                            Name
                         </label>
                         <input
-                            id="username"
-                            name="username"
+                            id="name"
+                            name="name"
                             type="text"
-                            placeholder="Enter your username"
-                            value={formData.username}
+                            placeholder="Enter your Name"
+                            value={formData.name}
                             onChange={handleChange}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                             required
