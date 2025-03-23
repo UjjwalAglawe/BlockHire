@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import SearchForm from './SearchForm';
-import {  useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import ConnectMetaMask from '../Metamask/ConnectMetamask';
 
 export default function Header() {
     const location = useLocation();
 
-    const {currentUser} = useSelector((state)=> state.user)
+    const { currentUser } = useSelector((state) => state.user)
 
 
     //const active = useSelector((state) => state.signup.active);
@@ -25,10 +25,12 @@ export default function Header() {
                             alt="Logo"
                         /> */}
                         <h1 className="text-3xl text-primary font-extrabold font mb-4 ">BlockHire</h1>
-                    </Link>
-                    {
-                        currentUser ?
-                            (<Link to="/profile" className="flex flex-col items-center gap-4 lg:order-2 font-title text-gray-800">
+                    </Link>{
+                        currentUser ? (
+                            <Link
+                                to="/profile"
+                                className="flex flex-col items-center gap-4 lg:order-2 font-title text-gray-800"
+                            >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
@@ -43,24 +45,23 @@ export default function Header() {
                                         d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
                                     />
                                 </svg>
-                                {/* { <h4 className="text-sm font-semibold text-gray-400">{email}</h4> } */}
-                            </Link>) :
-                            (<div className="flex items-center lg:order-2 font-title">
+                            </Link>
+                        ) : (
+                            <div className="flex items-center lg:order-2 font-title">
                                 <Link
                                     to="/signin"
-                                    className="text-white bg-primary  hover:bg-secondary hover:transition-colors hover:duration-300 hover:text-black focus:ring-2 focus:ring-black font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 focus:outline-none hover:shadow-2xl transform hover:scale-105 transition duration-200  hover:border-black"
+                                    className="text-white bg-primary hover:bg-secondary hover:transition-colors hover:duration-300 hover:text-black focus:ring-2 focus:ring-black font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 focus:outline-none hover:shadow-2xl transform hover:scale-105 transition duration-200 hover:border-black"
                                 >
                                     Log in
                                 </Link>
-                                <Link
-                                    to="/freelancerRegister"
-                                    className="text-white bg-primary  hover:bg-secondary hover:transition-colors hover:duration-300 hover:text-black focus:ring-2 focus:ring-black font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 focus:outline-none hover:shadow-2xl transform hover:scale-105 transition duration-200 "
-                                >
-                                    Register
-                                </Link>
-                                <ConnectMetaMask/>
-                            </div>)
+                                <ConnectMetaMask />
+                            </div>
+                        )
                     }
+
+                    {/* Show Register button only if user is logged in */}
+                    
+
                     {location.pathname !== '/' && (
                         <div className='motion-preset-pop motion-duration-250'>
                             <SearchForm />
@@ -114,6 +115,18 @@ export default function Header() {
                             </li> */}
                         </ul>
                     </div>
+
+                    <div>
+                    {currentUser && (
+                        <Link
+                            to="/freelancerRegister"
+                            className="text-white bg-primary hover:bg-secondary hover:transition-colors hover:duration-300 hover:text-black focus:ring-2 focus:ring-black font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 focus:outline-none hover:shadow-2xl transform hover:scale-105 transition duration-200"
+                        >
+                            Register
+                        </Link>
+                    )}
+                    </div>
+
                 </div>
             </nav>
         </header>

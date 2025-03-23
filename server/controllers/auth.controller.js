@@ -3,13 +3,13 @@ const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 exports.signup = async (req, res, next) => {
-    const { username, email, password } = req.body;
+    const { name, email, password } = req.body;
     const hashPassword = bcryptjs.hashSync(password, 10);
 
     try {
         const newUser = await prisma.user.create({
             data: {
-                username,
+                name,
                 email,
                 password: hashPassword,
             },
@@ -24,7 +24,7 @@ exports.signup = async (req, res, next) => {
         if (err.code === "P2002") {
             return res.status(400).json({
                 success: false,
-                message: "Username or email is already taken",
+                message: "Name or email is already taken",
             });
         }
         next(err);
@@ -87,7 +87,7 @@ exports.google = async (req, res, next) => {
 
             const newUser = await prisma.user.create({
                 data: {
-                    username:
+                    name:
                         req.body.name.split(" ").join("").toLowerCase() +
                         Math.random().toString(36).slice(-4),
                     email: req.body.email,
