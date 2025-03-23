@@ -17,6 +17,8 @@ export default function Header() {
 
     const handleLogout = () => {
         console.log("User logged out");
+        console.log(currentUser.data);
+        
         // Add your logout logic here (clear state, redirect, etc.)
     };
 
