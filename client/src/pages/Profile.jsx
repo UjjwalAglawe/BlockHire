@@ -1,18 +1,26 @@
+import { current } from '@reduxjs/toolkit';
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const Profile = ({ userData }) => {
-    const { username } = useParams();
-    //   const isFreelancer = true;
-    const navigate = useNavigate();
-    const isFreelancer = userData.accountType === 'freelancer';
+
+    const {currentUser} = useSelector((state)=> state.user)
+    // const { username } = useParams();
+    //  const isFreelancer = true;
+    // const navigate = useNavigate();
+    // const isFreelancer = userData.accountType === 'freelancer';
 
     useEffect(() => {
 
-        if (isFreelancer) {
-            navigate('/freelancerprofile');
-        }
+        // if (isFreelancer) {
+        //     navigate('/freelancerprofile');
+        // }
     }, [])
+
+    console.log(currentUser.data.email)
+    
+
 
     return (
         <div className="min-h-screen bg-gray-100">
