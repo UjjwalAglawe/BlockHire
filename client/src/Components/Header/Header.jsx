@@ -1,36 +1,80 @@
 import React, { useState } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
-import SearchForm from './SearchForm';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import SearchForm from './SearchForm';
 import ConnectMetaMask from '../Metamask/ConnectMetamask';
 
 export default function Header() {
     const location = useLocation();
+    const navigate = useNavigate();
+    const { currentUser } = useSelector((state) => state.user);
 
-    const { currentUser } = useSelector((state) => state.user)
+    const [dropdownOpen, setDropdownOpen] = useState(false);
 
+    const toggleDropdown = () => {
+        setDropdownOpen(!dropdownOpen);
+    };
 
-    //const active = useSelector((state) => state.signup.active);
-    //const email = useSelector((state) => state.signup.signup.userInfo.email)
-    // console.log(active)
+    const handleLogout = () => {
+        console.log("User logged out");
+        // Add your logout logic here (clear state, redirect, etc.)
+    };
 
     return (
-        <header className="shadow sticky z-50 top-0 ">
+        <header className="shadow sticky z-50 top-0">
             <nav className="bg-white border-gray-200 px-2 lg:px-4 py-2.5">
                 <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
-                    <Link to="/" className="flex items-center  motion-preset-fade motion-duration-200">
-                        {/* <img
-                            src="https://alexharkness.com/wp-content/uploads/2020/06/logo-2.png"
-                            className="mr-3 h-12"
-                            alt="Logo"
-                        /> */}
-                        <h1 className="text-3xl text-primary font-extrabold font mb-4 ">BlockHire</h1>
-                    </Link>{
-                        currentUser ? (
-                            <Link
-                                to="/profile"
-                                className="flex flex-col items-center gap-4 lg:order-2 font-title text-gray-800"
-                            >
+                    <Link to="/" className="flex items-center motion-preset-fade motion-duration-200">
+                        <h1 className="text-3xl text-primary font-extrabold mb-4">BlockHire</h1>
+                    </Link>
+
+                    {/* Navbar Links */}
+                    <div className="flex items-end justify-end">
+                        <ul className="flex flex-col font-title justify-end mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0 lg:ml-auto">
+                            <li className="motion-preset-pop motion-duration-250">
+                                <NavLink
+                                    to="/"
+                                    className={({ isActive }) =>
+                                        `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-primary" : "text-gray-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-primary lg:p-0`
+                                    }
+                                >
+                                    Home
+                                </NavLink>
+                            </li>
+                            <li className="motion-preset-pop motion-duration-250">
+                                <NavLink
+                                    to="/freelancers"
+                                    className={({ isActive }) =>
+                                        `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-primary" : "text-gray-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-primary lg:p-0`
+                                    }
+                                >
+                                    Freelancers
+                                </NavLink>
+                            </li>
+                            <li className="motion-preset-pop motion-duration-250">
+                                <NavLink
+                                    to="/about"
+                                    className={({ isActive }) =>
+                                        `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-primary" : "text-gray-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-primary lg:p-0`
+                                    }
+                                >
+                                    About us
+                                </NavLink>
+                            </li>
+                        </ul>
+                    </div>
+
+                    {/* Search Form */}
+                    {location.pathname !== '/' && (
+                        <div className="motion-preset-pop motion-duration-250">
+                            <SearchForm />
+                        </div>
+                    )}
+
+                    {/* Profile Icon or Login/Register Buttons */}
+                    {currentUser ? (
+                        <div className="relative">
+                            <button onClick={toggleDropdown} className="flex items-center">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
@@ -45,88 +89,47 @@ export default function Header() {
                                         d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
                                     />
                                 </svg>
+                            </button>
+
+                            {dropdownOpen && (
+                                <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg">
+                                    <ul className="py-2 text-gray-800">
+                                        <li>
+                                            <button onClick={() => navigate('/userprofile')} className="block w-full px-4 py-2 text-left hover:bg-gray-100">
+                                                Profile
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button onClick={() => navigate('/freelancerRegister')} className="block w-full px-4 py-2 text-left hover:bg-gray-100">
+                                                Become a Freelancer
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button onClick={handleLogout} className="block w-full px-4 py-2 text-left hover:bg-gray-100 text-red-600">
+                                                Logout
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <div className="flex items-center lg:order-2 font-title">
+                            <Link
+                                to="/signin"
+                                className="text-white bg-primary hover:bg-secondary transition-colors duration-300 hover:text-black focus:ring-2 focus:ring-black font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2"
+                            >
+                                Log in
                             </Link>
-                        ) : (
-                            <div className="flex items-center lg:order-2 font-title">
-                                <Link
-                                    to="/signin"
-                                    className="text-white bg-primary hover:bg-secondary hover:transition-colors hover:duration-300 hover:text-black focus:ring-2 focus:ring-black font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 focus:outline-none hover:shadow-2xl transform hover:scale-105 transition duration-200 hover:border-black"
-                                >
-                                    Log in
-                                </Link>
-                                <ConnectMetaMask />
-                            </div>
-                        )
-                    }
-
-                    {/* Show Register button only if user is logged in */}
-                    
-
-                    {location.pathname !== '/' && (
-                        <div className='motion-preset-pop motion-duration-250'>
-                            <SearchForm />
+                            <Link
+                                to="/freelancerRegister"
+                                className="text-white bg-primary hover:bg-secondary transition-colors duration-300 hover:text-black focus:ring-2 focus:ring-black font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2"
+                            >
+                                Register
+                            </Link>
+                            {/* <ConnectMetaMask /> */}
                         </div>
                     )}
-                    <div
-                        // className="hidden justify-end items-center w-full lg:flex lg:w-auto lg:order-1"
-                        className='flex items-end justify-end'
-                        id="mobile-menu-2"
-                    >
-                        <ul className="flex flex-col font-title justify-end mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0 lg:ml-auto ">
-                            <li className='motion-preset-pop motion-duration-250'>
-                                <NavLink
-                                    to="/"
-                                    className={({ isActive }) =>
-                                        `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-primary" : "text-gray-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-primary lg:p-0 ${location.pathname == '/' ? 'motion-preset-pop motion-duration-250' : ''}`
-                                    }
-                                >
-                                    Home
-                                </NavLink>
-                            </li>
-                            <li className='motion-preset-pop motion-duration-250'>
-                                <NavLink
-                                    to="/freelancers"
-                                    className={({ isActive }) =>
-                                        `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-primary" : "text-gray-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-primary lg:p-0 ${location.pathname == '/' ? 'motion-preset-pop motion-duration-250' : ''}`
-                                    }
-                                >
-                                    Freelancers
-                                </NavLink>
-                            </li>
-                            <li className='motion-preset-pop motion-duration-250'>
-                                <NavLink
-                                    to="/about"
-                                    className={({ isActive }) =>
-                                        `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-primary" : "text-gray-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-primary lg:p-0 ${location.pathname == '/' ? 'motion-preset-pop motion-duration-250' : ''}`
-                                    }
-                                >
-                                    About us
-                                </NavLink>
-                            </li>
-                            {/* <li className='motion-preset-pop motion-duration-250'>
-                                <NavLink
-                                    to="/about"
-                                    className={({ isActive }) =>
-                                        `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-primary" : "text-gray-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-primary lg:p-0 ${location.pathname == '/'?'motion-preset-pop motion-duration-250':'' }`
-                                    }
-                                >
-                                    Contact us
-                                </NavLink>
-                            </li> */}
-                        </ul>
-                    </div>
-
-                    <div>
-                    {currentUser && (
-                        <Link
-                            to="/freelancerRegister"
-                            className="text-white bg-primary hover:bg-secondary hover:transition-colors hover:duration-300 hover:text-black focus:ring-2 focus:ring-black font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 focus:outline-none hover:shadow-2xl transform hover:scale-105 transition duration-200"
-                        >
-                            Register
-                        </Link>
-                    )}
-                    </div>
-
                 </div>
             </nav>
         </header>
