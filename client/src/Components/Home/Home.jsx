@@ -3,6 +3,7 @@ import SearchComponent from './SearchComponent';
 import SliderService from './SliderService';
 import Information from './Information';
 import AboutUs from './AboutUs';
+import { useSelector } from 'react-redux';
 
 
 function Home() {
@@ -13,6 +14,8 @@ function Home() {
     const handleLearnMoreClick = () => {
         infoRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
+    
+    
 
     return (
         <div className="m-2 font-title">

@@ -146,7 +146,7 @@ const freelancerData = {
         <Route index element={<Home />} />  
         <Route path='about' element={<AboutUs />} />
         <Route path='freelancers' element={<FreelancerCard />} />
-        <Route path='userprofile'   element={<Profile  userData={freelancerData}/>} />
+        <Route path='userprofile'   element={<Profile  userData={regularUserData}/>} />
         
         {/* CHANGE ACCORDING TO FREELANCER CURRENTLY STATIC */}
         <Route path='freelancerprofile' element={<FreelancerProfile />} />
