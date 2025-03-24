@@ -1,4 +1,4 @@
-const prisma = require("../dbConfig/prisma"); 
+const prisma = require("../dbConfig/prisma");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -52,14 +52,20 @@ exports.signin = async (req, res, next) => {
             });
         }
 
-        const token = jwt.sign({ id: validUser.id }, process.env.JWT_SECRET);
+        const token = jwt.sign({ id: validUser.id }, process.env.JWT_SECRET, { expiresIn: '2d' });
+
         const { password: pass, ...rest } = validUser;
 
-        res.cookie("access_token", token, { httpOnly: true }).status(200).json({
+        res.cookie('access_token', token, {
+            httpOnly: true, // Prevents JS access
+            secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+            sameSite: 'Strict', // Prevents CSRF attacks
+        }).status(200).json({
             success: true,
-            message: "Logged in successfully",
+            message: 'Logged in successfully',
             data: rest,
         });
+
     } catch (err) {
         next(err);
     }
@@ -95,7 +101,8 @@ exports.google = async (req, res, next) => {
                 },
             });
 
-            const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET);
+            const token = jwt.sign({ id: validUser.id }, process.env.JWT_SECRET, { expiresIn: '2d' });
+
             const { password: pass, ...rest } = newUser;
 
             res.cookie("access_token", token, { httpOnly: true }).status(200).json({
@@ -104,6 +111,24 @@ exports.google = async (req, res, next) => {
                 data: rest,
             });
         }
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+exports.signOut = async (req, res, next) => {
+    try {
+        if (!req.cookies?.access_token) {
+            return res.status(400).json({ success: false, message: 'No active session to log out' });
+        }
+
+        res.clearCookie('access_token', {
+            httpOnly: true,
+            sameSite: 'Strict',
+        });
+
+        return res.status(200).json({ success: true, message: 'User has been logged out!' });
     } catch (error) {
         next(error);
     }
