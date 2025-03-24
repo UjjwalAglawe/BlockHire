@@ -1,135 +1,149 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { registerFreelancerStart, registerFreelancerSuccess, registerFreelancerFailure } from "../reducer/user/freelancerSlice";
 
 const FreelancerSignUp = () => {
-    const {
-        register,
-        handleSubmit,
-        setValue,
-        formState: { errors },
-    } = useForm({
-        defaultValues: {
-            title: "",
-            bio: "",
-            education: "",
-            experience: "",
-            portfolio_url: "",
-            hourly_rate: "",
-            metamask_address: "",
-            skills: []
-        },
+    const [formData, setFormData] = useState({
+        title: "",
+        bio: "",
+        education: "",
+        experience: "",
+        portfolio_url: "",
+        hourly_rate: "",
+        metamask_address: "",
+        skills: [],
     });
 
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
     const navigate = useNavigate();
+    const { id } = useParams();
     const [skills, setSkills] = useState([]);
     const [skillInput, setSkillInput] = useState("");
+    const dispatch = useDispatch()
 
-    // Function to add a skill
     const handleSkillAdd = () => {
         if (skillInput.trim() && !skills.includes(skillInput.trim())) {
             const updatedSkills = [...skills, skillInput.trim()];
             setSkills(updatedSkills);
-            setValue("skills", updatedSkills); // Update form state
-            console.log(skills);
-            
-            setSkillInput(""); // Clear input
+            setFormData((prev) => ({ ...prev, skills: updatedSkills }));
+            setSkillInput("");
         }
     };
 
-    // Function to remove a skill
     const handleSkillRemove = (skillToRemove) => {
         const updatedSkills = skills.filter(skill => skill !== skillToRemove);
         setSkills(updatedSkills);
-        setValue("skills", updatedSkills);
+        setFormData((prev) => ({ ...prev, skills: updatedSkills }));
     };
 
-    const onSubmit = (data) => {
-        data.skills = skills; // Attach skills array to form data
-        console.log("Form Data:", data);
-        alert("Freelancer profile created successfully!");
-        navigate("/");
+    const onSubmit = async (e) => {
+        e.preventDefault();
+        try {
+
+            dispatch(registerFreelancerStart())
+
+            const payload = {
+                title: formData.title,
+                bio: formData.bio,
+                education: formData.education,
+                experience: formData.experience,
+                portfolioUrl: formData.portfolio_url,
+                hourlyRate: parseFloat(formData.hourly_rate),
+                metamaskAddress: formData.metamask_address,
+                skills: skills,
+            };
+
+            const res = await axios.post(`/api/register/${id}`, payload, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            console.log(res.data.freealancer);
+
+            if (res.data.success === false) {
+                dispatch(registerFreelancerFailure(res.data.message))
+                return;
+            }
+
+            dispatch(registerFreelancerSuccess(res.data))
+
+            navigate("/");
+        } catch (error) {
+            console.error("Error creating freelancer profile:", error);
+            dispatch(registerFreelancerFailure(error.message))
+        }
     };
 
     return (
         <form
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={onSubmit}
             className="p-6 bg-white rounded-lg shadow-lg max-w-4xl mx-auto"
         >
             <h1 className="text-3xl font-extrabold text-center text-primary mb-6">BlockHire</h1>
             <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Freelancer Sign Up</h2>
 
-            {/* Title Dropdown */}
             <div className="mb-4">
                 <label className="block text-gray-700 font-medium">Title</label>
-                <select {...register("title", { required: true })} className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Select your title</option>
-                    <option value="Web Development">Web Development</option>
-                    <option value="Mobile App Development">Mobile App Development</option>
-                    <option value="Frontend Development">Frontend Development</option>
-                    <option value="Backend Development">Backend Development</option>
-                    <option value="Full-Stack Development">Full-Stack Development</option>
-                    <option value="Blockchain Development">Blockchain Development</option>
-                    <option value="Game Development">Game Development</option>
-                    <option value="DevOps & Cloud Infrastructure">DevOps & Cloud Infrastructure</option>
-                    <option value="Data Science & Machine Learning">Data Science & Machine Learning</option>
-                    <option value="AI Development">AI Development</option>
-                    <option value="Cybersecurity">Cybersecurity</option>
-                    <option value="Embedded Systems">Embedded Systems</option>
-                    <option value="UI/UX Design">UI/UX Design</option>
-                </select>
-                {errors.title && <p className="text-red-500 text-sm">Title is required.</p>}
-            </div>
-
-            {/* Bio */}
-            <div className="mb-4">
-                <label className="block text-gray-700 font-medium">Bio</label>
-                <textarea
-                    {...register("bio")}
+                <select
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Tell us about yourself"
-                    rows="3"
-                />
+                >
+                    <option value="">Select your title</option>
+                    {[
+                        "Web Development", "Mobile App Development", "Frontend Development",
+                        "Backend Development", "Full-Stack Development", "Blockchain Development",
+                        "Game Development", "DevOps & Cloud Infrastructure", "Data Science & Machine Learning",
+                        "AI Development", "Cybersecurity", "Embedded Systems", "UI/UX Design"
+                    ].map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                    ))}
+                </select>
             </div>
 
-            {/* Education, Experience, Portfolio */}
-            {["education", "experience", "portfolio_url"].map((field) => (
+            {[
+                { label: "Bio", field: "bio", type: "textarea" },
+                { label: "Education", field: "education", type: "text" },
+                { label: "Experience", field: "experience", type: "text" },
+                { label: "Portfolio URL", field: "portfolio_url", type: "text" },
+                { label: "Hourly Rate ($)", field: "hourly_rate", type: "number" },
+                { label: "MetaMask Address", field: "metamask_address", type: "text" },
+            ].map(({ label, field, type }) => (
                 <div className="mb-4" key={field}>
-                    <label className="block text-gray-700 font-medium">{field.replace("_", " ").toUpperCase()}</label>
-                    <input
-                        {...register(field)}
-                        type="text"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder={`Enter your ${field.replace("_", " ")}`}
-                    />
+                    <label className="block text-gray-700 font-medium">{label}</label>
+                    {type === "textarea" ? (
+                        <textarea
+                            name={field}
+                            value={formData[field]}
+                            onChange={handleChange}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder={`Enter your ${label.toLowerCase()}`}
+                            rows="3"
+                        />
+                    ) : (
+                        <input
+                            name={field}
+                            value={formData[field]}
+                            onChange={handleChange}
+                            type={type}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder={`Enter your ${label.toLowerCase()}`}
+                        />
+                    )}
                 </div>
             ))}
 
-            {/* Hourly Rate */}
-            <div className="mb-4">
-                <label className="block text-gray-700 font-medium">Hourly Rate ($)</label>
-                <input
-                    {...register("hourly_rate", { required: true, min: 0 })}
-                    type="number"
-                    step="0.01"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter your hourly rate"
-                />
-                {errors.hourly_rate && <p className="text-red-500 text-sm">Hourly rate must be non-negative.</p>}
-            </div>
-
-            {/* Metamask Address */}
-            <div className="mb-4">
-                <label className="block text-gray-700 font-medium">MetaMask Address</label>
-                <input
-                    {...register("metamask_address")}
-                    type="text"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter your MetaMask wallet address"
-                />
-            </div>
-
-            {/* Skills Input */}
             <div className="mb-4">
                 <label className="block text-gray-700 font-medium">Skills</label>
                 <div className="flex items-center space-x-2">
@@ -149,13 +163,9 @@ const FreelancerSignUp = () => {
                     </button>
                 </div>
 
-                {/* Skills Display */}
                 <div className="mt-2 flex flex-wrap gap-2">
                     {skills.map((skill, index) => (
-                        <span
-                            key={index}
-                            className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
-                        >
+                        <span key={index} className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
                             {skill}
                             <button
                                 type="button"
@@ -169,7 +179,6 @@ const FreelancerSignUp = () => {
                 </div>
             </div>
 
-            {/* Submit Button */}
             <button
                 type="submit"
                 className="w-full mt-4 bg-blue-600 text-white py-2 rounded-md font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"

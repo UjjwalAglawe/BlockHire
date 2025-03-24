@@ -5,7 +5,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 const Profile = () => {
 
-    const {currentUser} = useSelector((state)=> state.user)
+    const {currentUser} = useSelector((state)=> state.user);
+    const navigate=useNavigate();
 
     useEffect(() => {
         if (currentUser.data.isFreelancer) {
