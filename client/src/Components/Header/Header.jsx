@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUserFailure, deleteUserSuccess, signOutUserStart } from '../../reducer/user/userSlice';
@@ -10,10 +10,20 @@ export default function Header() {
     const dispatch = useDispatch();
     const { currentUser } = useSelector((state) => state.user);
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
 
-    const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+    const toggleDropdown = () => setDropdownOpen((prev) => !prev);
 
-    useEffect(() => {}, [currentUser]);
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     const handleLogout = async () => {
         try {
@@ -59,7 +69,7 @@ export default function Header() {
                     </div>
 
                     {currentUser ? (
-                        <div className="relative">
+                        <div className="relative" ref={dropdownRef}>
                             <button onClick={toggleDropdown} className="flex items-center">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
