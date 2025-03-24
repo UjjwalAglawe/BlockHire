@@ -19,4 +19,30 @@ model User {
 
   companyName     String?  
   contactNumber   String?  
+
+  freelancer      Freelancer? @relation("UserFreelancer")
+}
+
+model Freelancer {
+  id              Int      @id @default(autoincrement())
+  userId          Int      @unique
+  title           String
+  bio             String?
+  education       String?
+  experience      String?
+  portfolioUrl    String?
+  hourlyRate      Decimal  @default(0.00)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  metamaskAddress String?  @unique
+
+  user            User     @relation("UserFreelancer", fields: [userId], references: [id])
+  skills          FreelancerSkill[]
+}
+
+model FreelancerSkill {
+  id           Int        @id @default(autoincrement())
+  skill        String
+  freelancer   Freelancer @relation(fields: [freelancerId], references: [id])
+  freelancerId Int
 }

@@ -8,6 +8,9 @@ export default function Header() {
     const location = useLocation();
     const navigate = useNavigate();
     const { currentUser } = useSelector((state) => state.user);
+    // const { currFreelancer } = useSelector((state) => state.freelancer)
+    
+    // console.log(currFreelancer);
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -18,7 +21,7 @@ export default function Header() {
     const handleLogout = () => {
         console.log("User logged out");
         console.log(currentUser.data);
-        
+
         // Add your logout logic here (clear state, redirect, etc.)
     };
 
@@ -101,11 +104,14 @@ export default function Header() {
                                                 Profile
                                             </button>
                                         </li>
-                                        <li>
-                                            <button onClick={() => navigate('/freelancerRegister')} className="block w-full px-4 py-2 text-left hover:bg-gray-100">
-                                                Become a Freelancer
-                                            </button>
-                                        </li>
+                                        {
+                                            !currentUser.data.isFreelancer && 
+                                            <li>
+                                                <button onClick={() => navigate(`/freelancerRegister/${currentUser.data.id}`)} className="block w-full px-4 py-2 text-left hover:bg-gray-100">
+                                                    Become a Freelancer
+                                                </button>
+                                            </li>
+                                        }
                                         <li>
                                             <button onClick={handleLogout} className="block w-full px-4 py-2 text-left hover:bg-gray-100 text-red-600">
                                                 Logout
@@ -123,12 +129,12 @@ export default function Header() {
                             >
                                 Log in
                             </Link>
-                            <Link
+                            {/* <Link
                                 to="/freelancerRegister"
                                 className="text-white bg-primary hover:bg-secondary transition-colors duration-300 hover:text-black focus:ring-2 focus:ring-black font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2"
                             >
                                 Register
-                            </Link>
+                            </Link> */}
                             {/* <ConnectMetaMask /> */}
                         </div>
                     )}
