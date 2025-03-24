@@ -76,7 +76,7 @@ const FreelancerSignUp = () => {
             }
 
             dispatch(registerFreelancerSuccess(res.data))
-
+            
             navigate("/");
         } catch (error) {
             console.error("Error creating freelancer profile:", error);

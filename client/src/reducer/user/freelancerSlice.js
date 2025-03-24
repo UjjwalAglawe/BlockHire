@@ -38,7 +38,7 @@ const freelancerSlice = createSlice({
             state.loading = false;
             state.error = null;
             state.currFreelancer = null; 
-        },
+        }
     },
 });
 

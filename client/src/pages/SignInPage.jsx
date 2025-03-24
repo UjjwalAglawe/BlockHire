@@ -5,6 +5,7 @@
     import OAuth from '../Components/OAuth/OAuth';
     import { useDispatch, useSelector } from 'react-redux';
     import { signInFailure, signInStart, signInSuccess } from '../reducer/user/userSlice';
+import { registerFreelancerSuccess } from '../reducer/user/freelancerSlice';
 
     const SignInPage = () => {
 
@@ -24,36 +25,40 @@
             setFormData({ ...formData, [e.target.name]: e.target.value });
         };
 
-        const handleSubmit = async(e) => {
+        const handleSubmit = async (e) => {
             e.preventDefault();
-            try{
-                dispatch(signInStart())  
-
+            console.log("first")
+            try {
+                dispatch(signInStart());
+        
                 const res = await axios.post('/api/auth/signin', formData, {
                     headers: {
-                        "Content-Type" : "application/json", 
+                        "Content-Type": "application/json",
                     },
-                })
-
+                    withCredentials: true,
+                });
+        
                 console.log(res.data);
-
+        
                 if (res.data.success === false) {
-                    dispatch(signInFailure(res.data.message))
+                    dispatch(signInFailure(res.data.message));
                     return;
                 }
-
-                dispatch(signInSuccess(res.data))
+        
+                dispatch(signInSuccess(res.data.data));
+        
+                if (res.data.data.isFreelancer && res.data.data.freelancer) {
+                    dispatch(registerFreelancerSuccess(res.data.data.freelancer));
+                }
         
                 navigate('/');
-
-            }
-            catch(error){
+        
+            } catch (error) {
                 dispatch(signInFailure(error.message));
-                console.log(error.message)
+                console.error('Sign-in Error:', error.message);
             }
-
         };
-
+        
         return (
             <div className="flex justify-center items-center min-h-screen  bg-purple-200">
                 <div className="w-full max-w-md mx-4 bg-white rounded-lg shadow-xl p-8">
