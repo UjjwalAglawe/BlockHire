@@ -2,7 +2,8 @@ import axios from 'axios';
 import React, { useEffect, useState, useRef } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteUserFailure, deleteUserSuccess, signOutUserStart } from '../../reducer/user/userSlice';
+import { signOutUserFailure, signOutUserStart, signOutUserSuccess } from '../../reducer/user/userSlice';
+import { clearFreelancerState } from '../../reducer/user/freelancerSlice';
 
 export default function Header() {
     const location = useLocation();
@@ -14,34 +15,37 @@ export default function Header() {
 
     const toggleDropdown = () => setDropdownOpen((prev) => !prev);
 
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setDropdownOpen(false);
+        useEffect(() => {
+            const handleClickOutside = (event) => {
+                if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                    setDropdownOpen(false);
+                }
+                console.log(currentUser)
+            };
+
+    
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => document.removeEventListener('mousedown', handleClickOutside);
+        }, []);
+
+        const handleLogout = async () => {
+            try {
+                dispatch(signOutUserStart());
+                
+                const { data } = await axios.post('/api/auth/signout', {}, { withCredentials: true });
+
+                if (data.message !== 'User has been logged out!') {
+                    dispatch(signOutUserFailure('Logout failed.'));
+                    return;
+                }
+
+                dispatch(signOutUserSuccess()); 
+                dispatch(clearFreelancerState())
+                navigate('/'); 
+            } catch (error) {
+                dispatch(signOutUserFailure(error.response?.data?.message || error.message));
             }
         };
-
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
-
-    const handleLogout = async () => {
-        try {
-            dispatch(signOutUserStart());
-            
-            const { data } = await axios.post('/api/auth/signout', {}, { withCredentials: true });
-
-            if (data.message !== 'User has been logged out!') {
-                dispatch(deleteUserFailure('Logout failed.'));
-                return;
-            }
-
-            dispatch(deleteUserSuccess(null)); 
-            navigate('/'); 
-        } catch (error) {
-            dispatch(deleteUserFailure(error.response?.data?.message || error.message));
-        }
-    };
 
     return (
         <header className="shadow sticky z-50 top-0">
@@ -91,9 +95,9 @@ export default function Header() {
                                                 Profile
                                             </button>
                                         </li>
-                                        {!currentUser.data.isFreelancer && (
+                                        {!currentUser.isFreelancer && (
                                             <li>
-                                                <button onClick={() => navigate(`/freelancerRegister/${currentUser.data.id}`)} className="block w-full px-4 py-2 text-left hover:bg-gray-100">
+                                                <button onClick={() => navigate(`/freelancerRegister/${currentUser.id}`)} className="block w-full px-4 py-2 text-left hover:bg-gray-100">
                                                     Become a Freelancer
                                                 </button>
                                             </li>

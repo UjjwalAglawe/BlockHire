@@ -52,24 +52,39 @@ exports.signin = async (req, res, next) => {
             });
         }
 
-        const token = jwt.sign({ id: validUser.id }, process.env.JWT_SECRET, { expiresIn: '2d' });
+        const token = jwt.sign({ id: validUser.id }, process.env.JWT_SECRET, {
+            expiresIn: '2d',
+        });
 
-        const { password: pass, ...rest } = validUser;
+        const { password: pass, ...userData } = validUser;
+
+        let responseData = { ...userData };
+
+        if (validUser.isFreelancer) {
+            const freelancerData = await prisma.freelancer.findUnique({
+                where: { userId: validUser.id },
+            });
+
+            if (freelancerData) {
+                responseData = { ...userData, freelancer: freelancerData };
+            }
+        }
 
         res.cookie('access_token', token, {
-            httpOnly: true, // Prevents JS access
-            secure: process.env.NODE_ENV === 'production', // HTTPS only in production
-            sameSite: 'Strict', // Prevents CSRF attacks
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict',
         }).status(200).json({
             success: true,
             message: 'Logged in successfully',
-            data: rest,
+            data: responseData,
         });
 
     } catch (err) {
         next(err);
     }
 };
+
 
 exports.google = async (req, res, next) => {
     try {
