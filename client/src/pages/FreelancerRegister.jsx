@@ -47,10 +47,10 @@ const FreelancerSignUp = () => {
 
     const onSubmit = async (e) => {
         e.preventDefault();
+
         try {
-
-            dispatch(registerFreelancerStart())
-
+            dispatch(registerFreelancerStart());
+    
             const payload = {
                 title: formData.title,
                 bio: formData.bio,
@@ -61,28 +61,34 @@ const FreelancerSignUp = () => {
                 metamaskAddress: formData.metamask_address,
                 skills: skills,
             };
-
+    
+            console.log("Payload being sent: ", payload);
             const res = await axios.post(`/api/register/${id}`, payload, {
                 headers: {
                     "Content-Type": "application/json",
                 },
             });
-
-            console.log(res.data.freealancer);
-
-            if (res.data.success === false) {
-                dispatch(registerFreelancerFailure(res.data.message))
-                return;
-            }
-
-            dispatch(registerFreelancerSuccess(res.data))
             
+            console.log("Response from server: ", res.data);
+    
+            if (!res.data.success) {
+                dispatch(registerFreelancerFailure(res.data.message));
+                return;
+            }           
+    
+            dispatch(registerFreelancerSuccess(res.data.data));
             navigate("/");
         } catch (error) {
             console.error("Error creating freelancer profile:", error);
-            dispatch(registerFreelancerFailure(error.message))
+            if (error.response) {
+                console.error("Error response data:", error.response.data);
+                dispatch(registerFreelancerFailure(error.response.data.message || "Failed to create freelancer profile"));
+            } else {
+                dispatch(registerFreelancerFailure(error.message));
+            }
         }
     };
+    
 
     return (
         <form
