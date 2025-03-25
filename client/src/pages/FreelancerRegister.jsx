@@ -16,7 +16,7 @@ const FreelancerSignUp = () => {
         portfolio_url: "",
         hourly_rate: "",
         metamask_address: "",
-        profileImg: "",
+        photoUrl: "",
         skills: [],
         languages: [],
         country: "",
@@ -39,7 +39,7 @@ const FreelancerSignUp = () => {
                 // Upload image to Pinata
                 const ipfsUrl = await uploadToPinata(file);
                 if (ipfsUrl) {
-                    setFormData((prev) => ({ ...prev, profileImg: ipfsUrl }));
+                    setFormData((prev) => ({ ...prev, photoUrl: ipfsUrl }));
                 } else {
                     console.error("Failed to upload image to IPFS.");
                 }
@@ -122,9 +122,9 @@ const FreelancerSignUp = () => {
                 education: formData.education,
                 experience: formData.experience,
                 portfolioUrl: formData.portfolio_url,
-                hourlyRate: parseFloat(formData.hourly_rate),
+                hourlyRate: formData.hourly_rate ? parseFloat(formData.hourly_rate) : 0,
                 metamaskAddress: formData.metamask_address,
-                profileImg: formData.profileImg,
+                photoUrl: formData.photoUrl,
                 skills: skills,
                 languages: languages,
                 country: formData.country,
@@ -195,8 +195,8 @@ const FreelancerSignUp = () => {
                     onChange={handleFileChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                {formData.profileImg && (
-                    <img src={formData.profileImg} alt="Profile Preview" className="mt-2 w-24 h-24 rounded-full object-cover" />
+                {formData.photoUrl && (
+                    <img src={formData.photoUrl} alt="Profile Preview" className="mt-2 w-24 h-24 rounded-full object-cover" />
                 )}
             </div>
 
@@ -207,6 +207,7 @@ const FreelancerSignUp = () => {
                 { label: "Portfolio URL", field: "portfolio_url", type: "text" },
                 { label: "Hourly Rate ($)", field: "hourly_rate", type: "number" },
                 { label: "MetaMask Address", field: "metamask_address", type: "text" },
+                { label: "Country", field: "country", type: "text" },
             ].map(({ label, field, type }) => (
                 <div className="mb-4" key={field}>
                     <label className="block text-gray-700 font-medium">{label}</label>
