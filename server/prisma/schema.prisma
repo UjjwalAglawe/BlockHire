@@ -43,7 +43,7 @@ model Freelancer {
   id              Int      @id @default(autoincrement())
   userId          Int      @unique
   title           Domain   
-  bio             String?
+  bio             String
   education       String?
   experience      String?
   portfolioUrl    String?
@@ -58,7 +58,7 @@ model Freelancer {
   skills          FreelancerSkill[]
   languages       FreelancerLanguage[]
   projects        FreelancerProject[]
-  expectations    FreelancerExpectation[] 
+  expectations    FreelancerExpectation[]
 }
 
 model FreelancerExpectation {
