@@ -10,7 +10,7 @@ const Profile = () => {
 
     useEffect(() => {
         if (currentUser.isFreelancer) {
-            navigate('/freelancerprofile');
+            navigate('/freelancerprofile', { replace: true });
         }
     }, [])
 

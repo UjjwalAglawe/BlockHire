@@ -24,7 +24,7 @@ function FreelancerProjects() {
 
             {/* ADD BUTTON */}
             <div className="flex justify-center mb-6">
-                <Link to="/profile/addprojects" className="motion-preset-expand motion-duration-250 flex items-center justify-center gap-2 bg-primary text-white px-6 py-2 rounded-lg shadow hover:bg-secondary hover:text-black">
+                <Link to="/freelancerprofile/addprojects" className="motion-preset-expand motion-duration-250 flex items-center justify-center gap-2 bg-primary text-white px-6 py-2 rounded-lg shadow hover:bg-secondary hover:text-black">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"

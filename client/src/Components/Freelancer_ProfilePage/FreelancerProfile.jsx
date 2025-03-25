@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import {  useSelector } from 'react-redux';
 
 function FreelancerProfile() {
+  const {currentUser} = useSelector((state)=> state.user);
   const freelancer_info = {
     name: "Pankaj S",
     profile_image: "/ProfileImages/professional_img2.jpg",
@@ -66,7 +67,7 @@ function FreelancerProfile() {
           />
         </div>
         <div className="w-2/3 pl-6 flex flex-col justify-center">
-          <h2 className="text-2xl font-bold">{freelancer_info.name}</h2>
+          <h2 className="text-2xl font-bold">{currentUser.name}</h2>
           <div className="flex items-center text-lg mt-2">
             <span className="text-yellow-500">
               ★

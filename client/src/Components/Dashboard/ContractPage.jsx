@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 function ContractPage() {
-  const client = useSelector((state) => state.signup.client);
+  // const client = useSelector((state) => state.signup.client);
 
   const contract = [
     {
@@ -28,10 +28,10 @@ function ContractPage() {
             className="motion-preset-expand motion-duration-250 flex flex-col p-4 border border-gray-300 shadow-lg rounded-xl bg-white hover:shadow-2xl transition-shadow duration-300"
           >
             <h3 className="text-lg font-semibold text-gray-700 mb-2">
-              <span className="text-primary">Smart Contract:</span> {value.smart_contract}
+              <span className="text-primary">Smart Contract:</span> here
             </h3>
             <h3 className="text-lg text-gray-600 mb-2">
-              <span className="text-primary">{client === 'client' ? 'Freelancer' : 'Client'}:</span> {value.client}
+              <span className="text-primary"></span> hh
             </h3>
             <h3 className="text-lg text-gray-600">
               <span className="text-primary">Status:</span>{' '}

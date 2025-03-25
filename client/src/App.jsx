@@ -41,8 +41,8 @@ function App() {
             </Route>
 
             {/* SliderLayout Routes */}
-            <Route path="/profile" element={<SliderLayout />}>
-                <Route index element={<FreelancerDashboard />} />
+            <Route path="/freelancerprofile" element={<SliderLayout />}>
+                <Route path='' index element={<FreelancerDashboard />} />
                 <Route path='projects' element={<FreelancerProjects />} />
                 <Route path='editprofile' element={<EditProfile />} />
                 <Route path='addprojects' element={<FreelancerAddProjects />} />
