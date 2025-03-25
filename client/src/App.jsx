@@ -35,7 +35,7 @@ function App() {
 
                 {/* CHANGE ACCORDING TO FREELANCER CURRENTLY STATIC */}
                 <Route path='freelancerprofile' element={<FreelancerProfile />} />
-                <Route path='freelancerwork' element={<FreelancerWork />} />
+                <Route path='freelancerwork/:id' element={<FreelancerWork />} />
                 <Route path='sidebar' element={<Sidebar />} />
                 {/* <Route path='dashboard' element={<FreelancerDashboard />} /> */}
             </Route>

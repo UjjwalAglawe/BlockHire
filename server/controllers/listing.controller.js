@@ -49,7 +49,8 @@ exports.getAllFreelancers = async (req, res) => {
             createdAt: freelancer.createdAt,
             updatedAt: freelancer.updatedAt
         }));
-
+        console.log("send");
+        
         return res.status(200).json({
             success: true,
             data: formattedFreelancers,
