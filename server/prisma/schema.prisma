@@ -23,22 +23,6 @@ model User {
   freelancer      Freelancer? @relation("UserFreelancer")
 }
 
-enum Domain {
-  WEB_DEVELOPMENT
-  MOBILE_APP_DEVELOPMENT
-  FRONTEND_DEVELOPMENT
-  BACKEND_DEVELOPMENT
-  FULLSTACK_DEVELOPMENT
-  BLOCKCHAIN_DEVELOPMENT
-  GAME_DEVELOPMENT
-  DEVOPS_CLOUD_INFRASTRUCTURE
-  DATA_SCIENCE_MACHINE_LEARNING
-  AI_DEVELOPMENT
-  CYBERSECURITY
-  EMBEDDED_SYSTEMS
-  UI_UX_DESIGN
-}
-
 model Freelancer {
   id              Int      @id @default(autoincrement())
   userId          Int      @unique
@@ -104,4 +88,20 @@ model FreelancerLanguage {
   language     String     // Language name
   freelancer   Freelancer @relation(fields: [freelancerId], references: [id])
   freelancerId Int
+}
+
+enum Domain {
+  WEB_DEVELOPMENT
+  MOBILE_APP_DEVELOPMENT
+  FRONTEND_DEVELOPMENT
+  BACKEND_DEVELOPMENT
+  FULLSTACK_DEVELOPMENT
+  BLOCKCHAIN_DEVELOPMENT
+  GAME_DEVELOPMENT
+  DEVOPS_CLOUD_INFRASTRUCTURE
+  DATA_SCIENCE_MACHINE_LEARNING
+  AI_DEVELOPMENT
+  CYBERSECURITY
+  EMBEDDED_SYSTEMS
+  UI_UX_DESIGN
 }
