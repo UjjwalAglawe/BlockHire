@@ -23,26 +23,85 @@ model User {
   freelancer      Freelancer? @relation("UserFreelancer")
 }
 
+enum Domain {
+  WEB_DEVELOPMENT
+  MOBILE_APP_DEVELOPMENT
+  FRONTEND_DEVELOPMENT
+  BACKEND_DEVELOPMENT
+  FULLSTACK_DEVELOPMENT
+  BLOCKCHAIN_DEVELOPMENT
+  GAME_DEVELOPMENT
+  DEVOPS_CLOUD_INFRASTRUCTURE
+  DATA_SCIENCE_MACHINE_LEARNING
+  AI_DEVELOPMENT
+  CYBERSECURITY
+  EMBEDDED_SYSTEMS
+  UI_UX_DESIGN
+}
+
 model Freelancer {
   id              Int      @id @default(autoincrement())
   userId          Int      @unique
-  title           String
+  title           Domain   
   bio             String?
   education       String?
   experience      String?
   portfolioUrl    String?
   hourlyRate      Decimal  @default(0.00)
+  country         String   
+  photoUrl        String?  
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   metamaskAddress String?  @unique
 
-  user            User     @relation("UserFreelancer", fields: [userId], references: [id])
+  user            User                 @relation("UserFreelancer", fields: [userId], references: [id])
   skills          FreelancerSkill[]
+  languages       FreelancerLanguage[]
+  projects        FreelancerProject[]
+  expectations    FreelancerExpectation[] 
 }
+
+model FreelancerExpectation {
+  id           Int        @id @default(autoincrement())
+  point        String
+  freelancer   Freelancer @relation(fields: [freelancerId], references: [id])
+  freelancerId Int
+}
+
+
+model FreelancerProject {
+  id           Int      @id @default(autoincrement())
+  title        String   // Project title
+  description  String  // Project description (optional)
+  projectUrl   String?  // Link to project (optional)
+  thumbnailUrl String?  // New: Thumbnail image for the project
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  freelancer   Freelancer @relation(fields: [freelancerId], references: [id])
+  freelancerId Int
+
+  tools        FreelancerProjectTool[] // Relation to technologies used
+}
+
+model FreelancerProjectTool {
+  id             Int      @id @default(autoincrement())
+  tool           String   // Technology/Tool name
+  freelancerProject FreelancerProject @relation(fields: [freelancerProjectId], references: [id])
+  freelancerProjectId Int
+}
+
 
 model FreelancerSkill {
   id           Int        @id @default(autoincrement())
   skill        String
+  freelancer   Freelancer @relation(fields: [freelancerId], references: [id])
+  freelancerId Int
+}
+
+model FreelancerLanguage {
+  id           Int        @id @default(autoincrement())
+  language     String     // Language name
   freelancer   Freelancer @relation(fields: [freelancerId], references: [id])
   freelancerId Int
 }
