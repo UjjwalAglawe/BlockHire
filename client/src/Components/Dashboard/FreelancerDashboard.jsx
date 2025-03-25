@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 function FreelancerDashboard() {
   const { currentUser } = useSelector((state) => state.user);
   console.log("Skills are", currentUser);
-  
+
   return (
     <div className="font-title p-6 flex-col space-y-6">
       {/* Profile Info */}
@@ -12,9 +12,9 @@ function FreelancerDashboard() {
         <div className="flex mb-6">
           <div className="w-[15%] h-[15%] motion-preset-pop motion-duration-250">
             <img
-              src={currentUser.profile_image || "/ProfileImages/default_profile.jpg"}
+              src={currentUser.freelancer?.imgurl || "https://ivory-payable-firefly-160.mypinata.cloud/ipfs/bafkreidr4fgyg667si537yahtebeloo2mkhxkqzxmsfphk5fporu2ojbae"}
               alt={currentUser.name}
-              className="rounded-full w-32 h-32"
+              className="rounded-full w-32 h-32 object-cover"
             />
           </div>
           <div className="w-2/3 pl-6 flex flex-col justify-center">
@@ -47,7 +47,7 @@ function FreelancerDashboard() {
       </div>
 
       {/* Skills */}
-      <div className="border border-gray-300 p-4 rounded-lg shadow-sm"> 
+      <div className="border border-gray-300 p-4 rounded-lg shadow-sm">
         <h3 className="text-xl font-semibold mb-2">Skills</h3>
         <div className="flex flex-wrap gap-4">
           {currentUser.freelancer?.skills?.map((skill, index) => (

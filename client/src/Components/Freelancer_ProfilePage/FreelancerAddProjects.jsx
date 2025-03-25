@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 
 function FreelancerAddProjects() {
-    const [whatToExpect, setWhatToExpect] = useState(['']);
+    const [name, setName] = useState('');
     const [tools, setTools] = useState(['']);
-    const [additionalPoints, setAdditionalPoints] = useState(['']);
-    const [deadline, setDeadline] = useState('');
+    const [description, setDescription] = useState('');
+    const [url, setUrl] = useState('');
     const [images, setImages] = useState([]);
 
     const handleInputChange = (setter, index, value) => {
@@ -31,10 +31,10 @@ function FreelancerAddProjects() {
     const handleSubmit = (e) => {
         e.preventDefault();
         const projectData = {
-            whatToExpect,
+            name,
+            description,
             tools,
-            additionalPoints,
-            deadline,
+            url,
             images,
         };
         console.log('New Project:', projectData);
@@ -44,36 +44,39 @@ function FreelancerAddProjects() {
         <div className="font-title p-6">
             <h2 className="text-2xl font-bold mb-4">Add New Project</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
-                {/* What Can You Expect From Me */}
+                {/* Project Name */}
                 <div>
-                    <h3 className="text-lg font-semibold mb-2">What can you expect from me:</h3>
-                    <div className='text-gray-400 m-1'>Add what work your are going to provide.</div>
-                    {whatToExpect.map((item, index) => (
-                        <div key={index} className="flex items-center mb-2">
-                            <input
-                                type="text"
-                                value={item}
-                                onChange={(e) => handleInputChange(setWhatToExpect, index, e.target.value)}
-                                className="border rounded-lg px-3 py-2 flex-1 mr-2"
-                                placeholder={`Point ${index + 1}`}
-                            />
-                            <button
-                                type="button"
-                                onClick={() => handleRemoveField(setWhatToExpect, index)}
-                                className="text-red-500 hover:text-red-700"
-                            >
-                                Remove
-                            </button>
-                        </div>
-                    ))}
-                    <button
-                        type="button"
-                        onClick={() => handleAddField(setWhatToExpect)}
-                        className="text-blue-500 hover:text-blue-700"
-                    >
-                        + Add Point
-                    </button>
+                    <label htmlFor="deadline" className="block text-lg font-semibold mb-2">
+                        Project Name:
+                    </label>
+                    <div className='text-gray-400 m-1'>Name of the project.</div>
+                    <input
+                        type="text"
+                        id="name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="border rounded-lg px-3 py-2 w-full"
+                        placeholder="e.g. Face Detection Model"
+                    />
                 </div>
+
+                {/* Description */}
+                <div>
+                    <label htmlFor="deadline" className="block text-lg font-semibold mb-2">
+                        Description:
+                    </label>
+                    <div className='text-gray-400 m-1'>Description of the project.</div>
+                    <textarea
+                        id="description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        className="border rounded-lg px-3 py-2 w-full resize-none"
+                        placeholder="In this project ....."
+                        rows="5"  // Adjust the number of visible rows
+                    />
+
+                </div>
+
 
                 {/* Tools */}
                 <div>
@@ -106,50 +109,20 @@ function FreelancerAddProjects() {
                     </button>
                 </div>
 
-                {/* Additional Points */}
-                <div>
-                    <h3 className="text-lg font-semibold mb-2">Additional Points:</h3>
-                    <div className='text-gray-400 m-1'>Additional info.</div>
-                    {additionalPoints.map((point, index) => (
-                        <div key={index} className="flex items-center mb-2">
-                            <input
-                                type="text"
-                                value={point}
-                                onChange={(e) => handleInputChange(setAdditionalPoints, index, e.target.value)}
-                                className="border rounded-lg px-3 py-2 flex-1 mr-2"
-                                placeholder={`Point ${index + 1}`}
-                            />
-                            <button
-                                type="button"
-                                onClick={() => handleRemoveField(setAdditionalPoints, index)}
-                                className="text-red-500 hover:text-red-700"
-                            >
-                                Remove
-                            </button>
-                        </div>
-                    ))}
-                    <button
-                        type="button"
-                        onClick={() => handleAddField(setAdditionalPoints)}
-                        className="text-blue-500 hover:text-blue-700"
-                    >
-                        + Add Point
-                    </button>
-                </div>
 
-                {/* Deadline */}
+                {/* URL */}
                 <div>
                     <label htmlFor="deadline" className="block text-lg font-semibold mb-2">
-                        Deadline:
+                        URL:
                     </label>
-                    <div className='text-gray-400 m-1'>How long it will take to complete the project.</div>
+                    <div className='text-gray-400 m-1'>project url.</div>
                     <input
                         type="text"
                         id="deadline"
-                        value={deadline}
-                        onChange={(e) => setDeadline(e.target.value)}
+                        value={url}
+                        onChange={(e) => setUrl(e.target.value)}
                         className="border rounded-lg px-3 py-2 w-full"
-                        placeholder="e.g., 10-day delivery"
+                        placeholder="github.com..."
                     />
                 </div>
 

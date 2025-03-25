@@ -4,18 +4,50 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { registerFreelancerStart, registerFreelancerSuccess, registerFreelancerFailure } from "../reducer/user/freelancerSlice";
 import { signInSuccess } from "../reducer/user/userSlice";
+import uploadToPinata from "../uploadImg";
 
 const FreelancerSignUp = () => {
     const [formData, setFormData] = useState({
         title: "",
         bio: "",
+        expectations: [],
         education: "",
         experience: "",
         portfolio_url: "",
         hourly_rate: "",
         metamask_address: "",
+        profileImg: "",
         skills: [],
+        languages: [],
+        country: "",
     });
+
+    const [profileImage, setProfileImage] = useState(null);
+
+    const [expectations, setExpectations] = useState([]);
+    const [expectationInput, setExpectationInput] = useState("");
+
+    const [languages, setLanguages] = useState([]);
+    const [languageInput, setLanguageInput] = useState("");
+    
+
+      const handleFileChange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = async () => {
+                // Upload image to Pinata
+                const ipfsUrl = await uploadToPinata(file);
+                if (ipfsUrl) {
+                    setFormData((prev) => ({ ...prev, profileImg: ipfsUrl }));
+                } else {
+                    console.error("Failed to upload image to IPFS.");
+                }
+            };
+            reader.readAsDataURL(file);
+            setProfileImage(file);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -23,6 +55,37 @@ const FreelancerSignUp = () => {
             ...prev,
             [name]: value,
         }));
+    };
+
+    const handleExpectationAdd = () => {
+        if (expectationInput.trim() && !expectations.includes(expectationInput.trim())) {
+            const updatedExpectations = [...expectations, expectationInput.trim()];
+            setExpectations(updatedExpectations);
+            setFormData((prev) => ({ ...prev, expectations: updatedExpectations }));
+            setExpectationInput("");
+        }
+    };
+
+    const handleExpectationRemove = (expectationToRemove) => {
+        const updatedExpectations = expectations.filter(exp => exp !== expectationToRemove);
+        setExpectations(updatedExpectations);
+        setFormData((prev) => ({ ...prev, expectations: updatedExpectations }));
+    };
+
+    // Handle Adding & Removing Languages
+    const handleLanguageAdd = () => {
+        if (languageInput.trim() && !languages.includes(languageInput.trim())) {
+            const updatedLanguages = [...languages, languageInput.trim()];
+            setLanguages(updatedLanguages);
+            setFormData((prev) => ({ ...prev, languages: updatedLanguages }));
+            setLanguageInput("");
+        }
+    };
+
+    const handleLanguageRemove = (languageToRemove) => {
+        const updatedLanguages = languages.filter(lang => lang !== languageToRemove);
+        setLanguages(updatedLanguages);
+        setFormData((prev) => ({ ...prev, languages: updatedLanguages }));
     };
 
     const navigate = useNavigate();
@@ -55,12 +118,16 @@ const FreelancerSignUp = () => {
             const payload = {
                 title: formData.title,
                 bio: formData.bio,
+                expectations: formData.expectations,
                 education: formData.education,
                 experience: formData.experience,
                 portfolioUrl: formData.portfolio_url,
                 hourlyRate: parseFloat(formData.hourly_rate),
                 metamaskAddress: formData.metamask_address,
+                profileImg: formData.profileImg,
                 skills: skills,
+                languages: languages,
+                country: formData.country,
             };
 
             console.log("Payload being sent: ", payload);
@@ -118,6 +185,19 @@ const FreelancerSignUp = () => {
                         <option key={option} value={option}>{option}</option>
                     ))}
                 </select>
+            </div>
+
+            <div className="mb-4">
+                <label className="block text-gray-700 font-medium">Profile Image</label>
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                {formData.profileImg && (
+                    <img src={formData.profileImg} alt="Profile Preview" className="mt-2 w-24 h-24 rounded-full object-cover" />
+                )}
             </div>
 
             {[
@@ -178,6 +258,77 @@ const FreelancerSignUp = () => {
                             <button
                                 type="button"
                                 onClick={() => handleSkillRemove(skill)}
+                                className="ml-2 text-red-500 hover:text-red-700"
+                            >
+                                ×
+                            </button>
+                        </span>
+                    ))}
+                </div>
+            </div>
+
+
+            <div className="mb-4">
+                <label className="block text-gray-700 font-medium">Expectations</label>
+                <div className="flex items-center space-x-2">
+                    <input
+                        type="text"
+                        value={expectationInput}
+                        onChange={(e) => setExpectationInput(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Enter a skill and press Add"
+                    />
+                    <button
+                        type="button"
+                        onClick={handleExpectationAdd}
+                        className="bg-green-500 text-white px-4 py-2 rounded-md font-medium hover:bg-green-600"
+                    >
+                        Add
+                    </button>
+                </div>
+
+                <div className="mt-2 flex flex-wrap gap-2">
+                    {expectations.map((expectation, index) => (
+                        <span key={index} className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                            {expectation}
+                            <button
+                                type="button"
+                                onClick={() => handleExpectationRemove(expectation)}
+                                className="ml-2 text-red-500 hover:text-red-700"
+                            >
+                                ×
+                            </button>
+                        </span>
+                    ))}
+                </div>
+            </div>
+            
+            <div className="mb-4">
+                <label className="block text-gray-700 font-medium">Language</label>
+                <div className="flex items-center space-x-2">
+                    <input
+                        type="text"
+                        value={languageInput}
+                        onChange={(e) => setLanguageInput(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Enter a skill and press Add"
+                    />
+                    <button
+                        type="button"
+                        onClick={handleLanguageAdd}
+                        className="bg-green-500 text-white px-4 py-2 rounded-md font-medium hover:bg-green-600"
+                    >
+                        Add
+                    </button>
+                </div>
+
+                <div className="mt-2 flex flex-wrap gap-2">
+                    {languages.map((language, index) => (
+                        <span key={index} className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                            {language}
+                            <button
+                                type="button"
+                                onClick={() => handleLanguageRemove(language)}
                                 className="ml-2 text-red-500 hover:text-red-700"
                             >
                                 ×
