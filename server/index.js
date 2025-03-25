@@ -34,9 +34,11 @@ app.use((error, req, res, next) => {
 
 const authRoute = require('./routes/auth.routes');
 const registerRoute = require("./routes/register.routes");
+const listingRoute = require("./routes/listing.routes");
 
 app.use("/api/auth", authRoute)
 app.use("/api", registerRoute)
+app.use("/api", listingRoute)
 
 app.listen(4000, ()=>{
     console.log("Listening to 4000!")
