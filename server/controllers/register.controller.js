@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 exports.freelancerSignup = async (req, res, next) => {
     try {
-        console.log("first")
+        console.log("first");
         const { id } = req.params;
         const {
             title,
@@ -18,12 +18,13 @@ exports.freelancerSignup = async (req, res, next) => {
         } = req.body;
 
         console.log("Received payload: ", req.body);
+        
         const user = await prisma.user.findUnique({
             where: { id: parseInt(id) },
         });
 
         if (!user) {
-            return res.status(404).json({ message: "User not found." });
+            return res.status(404).json({ success: false, message: "User not found." });
         }
 
         const existingFreelancer = await prisma.freelancer.findUnique({
@@ -31,9 +32,8 @@ exports.freelancerSignup = async (req, res, next) => {
         });
 
         if (existingFreelancer) {
-            return res.status(400).json({ message: "User is already registered as a freelancer." });
+            return res.status(400).json({ success: false, message: "User is already registered as a freelancer." });
         }
-
 
         console.log("Creating freelancer profile...");
         const freelancer = await prisma.freelancer.create({
@@ -50,9 +50,7 @@ exports.freelancerSignup = async (req, res, next) => {
                     create: skills.map((skill) => ({ skill })),
                 },
             },
-            include: {
-                skills: true,
-            },
+            include: { skills: true },
         });
 
         // Update user to mark as freelancer
@@ -60,22 +58,33 @@ exports.freelancerSignup = async (req, res, next) => {
         const updatedUser = await prisma.user.update({
             where: { id: parseInt(id) },
             data: { isFreelancer: true },
-            include: { freelancer: true },
         });
 
-        console.log("User successfully registered as a freelancer.");        
-        res.status(201).json({
+        // Generate JWT token
+        const token = jwt.sign({ id: updatedUser.id }, process.env.JWT_SECRET, {
+            expiresIn: '2d',
+        });
+
+        const { password, ...userData } = updatedUser;
+
+        const responseData = { ...userData, freelancer };
+
+        // Set token in cookies (same as signin)
+        res.cookie('access_token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict',
+        });
+
+        return res.status(200).json({
             success: true,
             message: "User successfully registered as a freelancer.",
-            data: {
-                user: updatedUser,
-                freelancer
-            }
+            data: responseData,  // Same format as sign-in response
         });
 
     } catch (error) {
         console.error("Error registering freelancer:", error);
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: "Internal server error.",
             error: error.message,

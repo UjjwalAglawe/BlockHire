@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { registerFreelancerStart, registerFreelancerSuccess, registerFreelancerFailure } from "../reducer/user/freelancerSlice";
+import { signInSuccess } from "../reducer/user/userSlice";
 
 const FreelancerSignUp = () => {
     const [formData, setFormData] = useState({
@@ -50,7 +51,7 @@ const FreelancerSignUp = () => {
 
         try {
             dispatch(registerFreelancerStart());
-    
+
             const payload = {
                 title: formData.title,
                 bio: formData.bio,
@@ -61,21 +62,22 @@ const FreelancerSignUp = () => {
                 metamaskAddress: formData.metamask_address,
                 skills: skills,
             };
-    
+
             console.log("Payload being sent: ", payload);
             const res = await axios.post(`/api/register/${id}`, payload, {
                 headers: {
                     "Content-Type": "application/json",
                 },
             });
-            
+
             console.log("Response from server: ", res.data);
-    
-            if (!res.data.success) {
-                dispatch(registerFreelancerFailure(res.data.message));
-                return;
-            }           
-    
+
+            dispatch(signInSuccess(res.data.data));
+
+            if (res.data.data.isFreelancer && res.data.data.freelancer) {
+                dispatch(registerFreelancerSuccess(res.data.data.freelancer));
+            }
+
             dispatch(registerFreelancerSuccess(res.data.data));
             navigate("/");
         } catch (error) {
@@ -88,7 +90,7 @@ const FreelancerSignUp = () => {
             }
         }
     };
-    
+
 
     return (
         <form

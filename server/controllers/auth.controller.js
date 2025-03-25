@@ -134,17 +134,33 @@ exports.google = async (req, res, next) => {
 
 exports.signOut = async (req, res, next) => {
     try {
-        if (!req.cookies?.access_token) {
-            return res.status(400).json({ success: false, message: 'No active session to log out' });
+        console.log("Received cookies:", req.cookies); // Debugging
+
+        // Check if access_token exists in cookies
+        if (!req.cookies || !req.cookies.access_token) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'No active session to log out' 
+            });
         }
 
+        // Clear the authentication cookie
         res.clearCookie('access_token', {
             httpOnly: true,
-            sameSite: 'Strict',
+            secure: false, // Change to true in production
+            sameSite: 'Lax', // Use 'None' with secure: true for cross-site
         });
 
-        return res.status(200).json({ success: true, message: 'User has been logged out!' });
+        console.log("User successfully logged out");
+
+        return res.status(200).json({ 
+            success: true, 
+            message: 'User has been logged out!' 
+        });
+
     } catch (error) {
+        console.error("Error in signOut:", error);
         next(error);
     }
 };
+

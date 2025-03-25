@@ -32,7 +32,14 @@ export default function Header() {
             try {
                 dispatch(signOutUserStart());
                 
-                const { data } = await axios.post('/api/auth/signout', {}, { withCredentials: true });
+                const { data } = await axios.post(
+                    '/api/auth/signout',
+                    {},
+                    {
+                        withCredentials: true,
+                        headers: { 'Content-Type': 'application/json' },
+                }
+                );
 
                 if (data.message !== 'User has been logged out!') {
                     dispatch(signOutUserFailure('Logout failed.'));
