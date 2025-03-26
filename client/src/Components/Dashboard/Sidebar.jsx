@@ -10,15 +10,6 @@ function Sidebar() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const handleLogout = () => {
-        let logout = confirm("Do you want to logout ?")
-        if (logout) {
-            persistor.purge();
-            navigate("/");
-            console.log("Logout!!!")
-        }
-    };
-
     const sidebar_item = [
         {
             name: "Dashboard",
@@ -74,14 +65,6 @@ function Sidebar() {
                         </NavLink>}
                     </li>
                 ))}
-                <li className='items-center'>
-                    <button
-                        onClick={handleLogout}
-                        className="flex items-center p-4 text-lg font-medium rounded-lg bg-red-500 text-white hover:bg-red-600 transition-all duration-300"
-                    >
-                        Logout
-                    </button>
-                </li>
             </ul>
         </div>
     );
