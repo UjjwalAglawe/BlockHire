@@ -1,12 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import uploadToPinata from '../../uploadImg';
+import { useDispatch, useSelector } from 'react-redux';
+import { addProjectStart, addProjectFailure, addProjectSuccess  } from '../../reducer/project/projectSlice';
+
+import { useNavigate } from "react-router-dom";
 
 function FreelancerAddProjects() {
     const [name, setName] = useState('');
     const [tools, setTools] = useState(['']);
     const [description, setDescription] = useState('');
     const [url, setUrl] = useState('');
-    const [images, setImages] = useState([]);
+    const [thumbnailUrl, setThumbnailUrl] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState('');
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    // Get user and freelancer data from Redux store
+    const user = useSelector((state) => state.user);
+    const freelancer = useSelector((state) => state.freelancer);
+
+    console.log("User is", user);
+    console.log("Freelancer is", freelancer);
+    
+    const freelancerId = user.currentUser.freelancer.id;
+
+    useEffect(() => {
+        if (!freelancerId) {
+            setMessage('Error: Freelancer ID not found. Please make sure you are logged in as a freelancer.');
+        }
+    }, [freelancerId]);
+
+    // Handle input changes for dynamic fields (tools)
     const handleInputChange = (setter, index, value) => {
         setter(prev => {
             const updated = [...prev];
@@ -15,73 +42,176 @@ function FreelancerAddProjects() {
         });
     };
 
+    // Add new input field dynamically
     const handleAddField = (setter) => {
         setter(prev => [...prev, '']);
     };
 
+    // Remove a specific field
     const handleRemoveField = (setter, index) => {
         setter(prev => prev.filter((_, i) => i !== index));
     };
 
-    const handleImageUpload = (e) => {
-        const files = Array.from(e.target.files);
-        setImages(prev => [...prev, ...files]);
+    // Handle image upload
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            try {
+                setLoading(true);
+                const ipfsUrl = await uploadToPinata(file);
+                
+                if (ipfsUrl) {
+                    setThumbnailUrl(ipfsUrl);
+                    setMessage('Image uploaded successfully!');
+                }
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                setMessage('Error uploading image. Please try again.');
+            } finally {
+                setLoading(false);
+            }
+        }
     };
 
-    const handleSubmit = (e) => {
+    // Handle form submission
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const projectData = {
-            name,
-            description,
-            tools,
-            url,
-            images,
-        };
-        console.log('New Project:', projectData);
+        dispatch(addProjectStart());
+
+        if (!freelancerId) {
+            setMessage('Error: Freelancer ID not found. Please make sure you are logged in as a freelancer.');
+            return;
+        }
+
+        if (!name || !description) {
+            setMessage('Title and description are required.');
+            return;
+        }
+
+        if (!thumbnailUrl) {
+            setMessage('Please upload a project thumbnail.');
+            return;
+        }
+
+        setLoading(true);
+        setMessage('');
+
+        try {
+            // Prepare the project data
+            const projectData = {
+                title: name.trim(),
+                description: description.trim(),
+                projectUrl: url ? url.trim() : '',
+                thumbnailUrl: thumbnailUrl.trim(),
+                tools: tools.filter(tool => tool.trim() !== '').map(tool => tool.trim())
+            };
+
+            console.log('Sending project data:', {
+                freelancerId,
+                ...projectData
+            });
+
+            const response = await axios.post(
+                `http://localhost:4000/api/freelancers/${freelancerId}/projects`,
+                projectData,
+                {
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            console.log('Server response:', response.data);
+
+            if (response.data.success) {
+                setMessage('Project added successfully!');
+                console.log('Project created:', response.data);
+
+                // Clear form after successful submission
+                setName('');
+                setDescription('');
+                setUrl('');
+                setTools(['']);
+                setThumbnailUrl('');
+
+                dispatch(addProjectSuccess(response.data.data));
+                navigate('/freelancerProfile/projects');
+            } else {
+                throw new Error(response.data.message || 'Failed to add project');
+            }
+        } catch (error) {
+            console.error('Error adding project:', {
+                message: error.message,
+                response: error.response?.data,
+                status: error.response?.status
+            });
+            
+            const errorMessage = error.response?.data?.message || 
+                               error.response?.data?.error || 
+                               error.message || 
+                               'Failed to add project. Please try again.';
+            
+            dispatch(addProjectFailure(errorMessage));
+            setMessage(errorMessage);
+        } finally {
+            setLoading(false);
+        }
     };
+    
+    if (!freelancerId) {
+        return (
+            <div className="font-title p-6">
+                <div className="bg-red-100 text-red-700 p-4 rounded">
+                    Please make sure you are logged in as a freelancer to add projects.
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="font-title p-6">
             <h2 className="text-2xl font-bold mb-4">Add New Project</h2>
+            {message && (
+                <div className={`mb-4 p-4 rounded ${
+                    message.includes('successfully') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                }`}>
+                    {message}
+                </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Project Name */}
+                
                 <div>
-                    <label htmlFor="deadline" className="block text-lg font-semibold mb-2">
+                    <label className="block text-lg font-semibold mb-2">
                         Project Name:
                     </label>
-                    <div className='text-gray-400 m-1'>Name of the project.</div>
                     <input
                         type="text"
-                        id="name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         className="border rounded-lg px-3 py-2 w-full"
                         placeholder="e.g. Face Detection Model"
+                        required
                     />
                 </div>
 
-                {/* Description */}
                 <div>
-                    <label htmlFor="deadline" className="block text-lg font-semibold mb-2">
+                    <label className="block text-lg font-semibold mb-2">
                         Description:
                     </label>
-                    <div className='text-gray-400 m-1'>Description of the project.</div>
                     <textarea
-                        id="description"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         className="border rounded-lg px-3 py-2 w-full resize-none"
-                        placeholder="In this project ....."
-                        rows="5"  // Adjust the number of visible rows
+                        placeholder="Describe your project..."
+                        rows="5"
+                        required
                     />
-
                 </div>
 
-
-                {/* Tools */}
                 <div>
                     <h3 className="text-lg font-semibold mb-2">Tools:</h3>
-                    <div className='text-gray-400 m-1'>Tools which you are going to use.</div>
                     {tools.map((tool, index) => (
                         <div key={index} className="flex items-center mb-2">
                             <input
@@ -91,13 +221,15 @@ function FreelancerAddProjects() {
                                 className="border rounded-lg px-3 py-2 flex-1 mr-2"
                                 placeholder={`Tool ${index + 1}`}
                             />
-                            <button
-                                type="button"
-                                onClick={() => handleRemoveField(setTools, index)}
-                                className="text-red-500 hover:text-red-700"
-                            >
-                                Remove
-                            </button>
+                            {tools.length > 1 && (
+                                <button
+                                    type="button"
+                                    onClick={() => handleRemoveField(setTools, index)}
+                                    className="text-red-500 hover:text-red-700"
+                                >
+                                    Remove
+                                </button>
+                            )}
                         </div>
                     ))}
                     <button
@@ -109,54 +241,49 @@ function FreelancerAddProjects() {
                     </button>
                 </div>
 
-
-                {/* URL */}
                 <div>
-                    <label htmlFor="deadline" className="block text-lg font-semibold mb-2">
-                        URL:
+                    <label className="block text-lg font-semibold mb-2">
+                        Project URL:
                     </label>
-                    <div className='text-gray-400 m-1'>project url.</div>
                     <input
-                        type="text"
-                        id="deadline"
+                        type="url"
                         value={url}
                         onChange={(e) => setUrl(e.target.value)}
                         className="border rounded-lg px-3 py-2 w-full"
-                        placeholder="github.com..."
+                        placeholder="e.g. https://github.com/user/project"
                     />
                 </div>
 
-                {/* Image Upload */}
                 <div>
-                    <label htmlFor="imageUpload" className="block text-lg font-semibold mb-2">
-                        Upload Images:
+                    <label className="block text-lg font-semibold mb-2">
+                        Project Thumbnail:
                     </label>
-                    <div className='text-gray-400 m-1'>To display your work.</div>
                     <input
                         type="file"
-                        id="imageUpload"
                         onChange={handleImageUpload}
-                        multiple
                         accept="image/*"
-                        className="block border rounded-lg px-3 py-2 w-full"
+                        className="border rounded-lg px-3 py-2 w-full"
+                        disabled={loading}
                     />
-                    <div className="mt-2">
-                        {images.length > 0 && (
-                            <ul className="list-disc pl-5">
-                                {images.map((image, index) => (
-                                    <li key={index}>{image.name}</li>
-                                ))}
-                            </ul>
-                        )}
-                    </div>
+                    {thumbnailUrl && (
+                        <div className="mt-2">
+                            <img 
+                                src={thumbnailUrl} 
+                                alt="Project thumbnail" 
+                                className="max-w-xs rounded-lg shadow-md"
+                            />
+                        </div>
+                    )}
                 </div>
 
-                {/* Submit Button */}
                 <button
                     type="submit"
-                    className="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-secondary hover:text-black transition duration-200"
+                    disabled={loading}
+                    className={`bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-secondary hover:text-black transition duration-200 ${
+                        loading ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
                 >
-                    Submit Project
+                    {loading ? 'Submitting...' : 'Submit Project'}
                 </button>
             </form>
         </div>
