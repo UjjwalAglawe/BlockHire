@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState ,useEffect} from 'react';
 import { Route, Routes } from "react-router-dom";
 
 import Layout from './Layout.jsx';
@@ -20,10 +20,25 @@ import SignInPage from './pages/SignInPage.jsx';
 import SignUpPage from './pages/SignUpPage.jsx';
 import FreelancerRegister from './pages/FreelancerRegister.jsx';
 import Profile from './pages/Profile.jsx';
+import { initializeContract } from './Components/Contract/initialize.js';
+import CreateContract from './Components/Contract/CreateContract.jsx';
 
 function App() {
     // Regular User Example
 
+    const [contract, setContract] = useState(null);
+
+    useEffect(() => {
+        const loadContract = async () => {
+          try {
+            const instance = await initializeContract();
+            setContract(instance);
+          } catch (error) {
+            console.error("Error initializing contract:", error);
+          }
+        };
+        loadContract();
+      }, []);
 
     return (
         <Routes>
@@ -31,7 +46,7 @@ function App() {
                 <Route index element={<Home />} />
                 <Route path='about' element={<AboutUs />} />
                 <Route path='freelancers' element={<FreelancerCard />} />
-                <Route path='userprofile' element={<Profile/>} />
+                <Route path='userprofile' element={<Profile contract={contract}/>} />
 
                 {/* CHANGE ACCORDING TO FREELANCER CURRENTLY STATIC */}
                 <Route path='freelancerprofile' element={<FreelancerProfile />} />
@@ -47,6 +62,10 @@ function App() {
                 <Route path='editprofile' element={<EditProfile />} />
                 <Route path='addprojects' element={<FreelancerAddProjects />} />
                 <Route path='contract' element={<ContractPage />} />
+            </Route>
+            
+            <Route path="/deal" element={<SliderLayout />}>
+                <Route path='create' index element={<CreateContract contract={contract}/>} />
             </Route>
 
             <Route path='signin' element={<SignInPage />} />
