@@ -45,7 +45,7 @@ function Home() {
 
                 {/* Box and search box */}
                 <div className="h-[70%] px-4 relative">
-                    <div className="w-full h-full bg-gradient-to-l from-primary to-secondary rounded-lg">1</div>
+                    <div className="w-full h-full bg-gradient-to-l from-primary to-secondary rounded-lg"></div>
                     <div className="absolute top-[50%] left-[26%] w-[50%]">
                         <SearchComponent />
                     </div>

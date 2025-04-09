@@ -61,7 +61,7 @@ function App() {
                 <Route path='projects' element={<FreelancerProjects />} />
                 <Route path='editprofile' element={<EditProfile />} />
                 <Route path='addprojects' element={<FreelancerAddProjects />} />
-                <Route path='contract' element={<ContractPage />} />
+                <Route path='contract' element={<ContractPage contract={contract} />} />
             </Route>
             
             <Route path="/deal" element={<SliderLayout />}>
