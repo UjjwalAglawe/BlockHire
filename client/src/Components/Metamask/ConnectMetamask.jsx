@@ -11,11 +11,13 @@ const ConnectMetaMask = () => {
             toast.error("MetaMask is not installed!");
             return;
         }
-
+    
         try {
-            const provider = new ethers.BrowserProvider(window.ethereum);
-            const accounts = await provider.send("eth_requestAccounts", []);
-            setAccount(accounts[0]);
+            const provider = new ethers.providers.Web3Provider(window.ethereum); // ✅ v5 syntax
+            await provider.send("eth_requestAccounts", []);
+            const signer = provider.getSigner();
+            const address = await signer.getAddress();
+            setAccount(address);
             toast.success("Connected to MetaMask");
         } catch (error) {
             console.error(error);

@@ -22,6 +22,8 @@ import FreelancerRegister from './pages/FreelancerRegister.jsx';
 import Profile from './pages/Profile.jsx';
 import { initializeContract } from './Components/Contract/initialize.js';
 import CreateContract from './Components/Contract/CreateContract.jsx';
+import Chatting from './Components/Chat/Chatting.jsx';
+import Allchat from './Components/Chat/Allchat.jsx';
 
 function App() {
     // Regular User Example
@@ -47,6 +49,7 @@ function App() {
                 <Route path='about' element={<AboutUs />} />
                 <Route path='freelancers' element={<FreelancerCard />} />
                 <Route path='userprofile' element={<Profile contract={contract}/>} />
+                <Route path='allchats' element={<Allchat />} />
 
                 {/* CHANGE ACCORDING TO FREELANCER CURRENTLY STATIC */}
                 <Route path='freelancerprofile' element={<FreelancerProfile />} />
@@ -61,6 +64,7 @@ function App() {
                 <Route path='projects' element={<FreelancerProjects />} />
                 <Route path='editprofile' element={<EditProfile />} />
                 <Route path='addprojects' element={<FreelancerAddProjects />} />
+                <Route path='allchats' element={<Allchat />} />
                 <Route path='contract' element={<ContractPage contract={contract} />} />
             </Route>
             
@@ -71,6 +75,7 @@ function App() {
             <Route path='signin' element={<SignInPage />} />
             <Route path='freelancerRegister/:id' element={<FreelancerRegister />} />
             <Route path='signup' element={<SignUpPage />} />
+            <Route path='chat/:id' element={<Chatting />} />
         </Routes>
     );
 }

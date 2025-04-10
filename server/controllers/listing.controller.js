@@ -82,6 +82,7 @@ exports.getFreelancerById = async (req, res) => {
             include: {
                 user: {
                     select: {
+                        id:true,
                         name: true,
                         email: true,
                         metamaskAddress: true
@@ -102,6 +103,7 @@ exports.getFreelancerById = async (req, res) => {
 
         const formattedFreelancer = {
             id: freelancer.id,
+            userId: freelancer.user.id,
             name: freelancer.user.name,
             email: freelancer.user.email,
             title: freelancer.title,

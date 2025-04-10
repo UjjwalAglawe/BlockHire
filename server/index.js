@@ -36,12 +36,17 @@ const authRoute = require('./routes/auth.routes');
 const registerRoute = require("./routes/register.routes");
 const listingRoute = require("./routes/listing.routes");
 const projectRoute = require("./routes/project.routes");
+const chatRoutes = require("./routes/chat.routes"); // Import route
 
 app.use("/api/auth", authRoute)
 app.use("/api", registerRoute)
 app.use("/api", listingRoute)
 app.use("/api", projectRoute)
 
-app.listen(4000, ()=>{
-    console.log("Listening to 4000!")
-})
+app.use("/api", chatRoutes); // Use route
+
+module.exports = app;
+
+// app.listen(4000, ()=>{
+//     console.log("Listening to 4000!")
+// })

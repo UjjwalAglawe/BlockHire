@@ -19,6 +19,7 @@ function FreelancerWork() {
                 }
 
                 const data = await response.json();
+                
 
                 if (data.success) {
                     setFreelancer(data.data);
@@ -99,13 +100,14 @@ function FreelancerWork() {
                         {freelancer?.name}
                     </div>
                     <button onClick={()=>{
-                        navigate("/deal/create")
+                        navigate(`/chat/${freelancer.userId}`)
                     }} className='m-4 px-8 py-3 text-white bg-primary justify-center items-center flex rounded-lg font-semibold hover:text-black hover:bg-secondary'>
                         <h3>Contact Me</h3>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6 ml-2 text-white">
                             <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
                         </svg>
                     </button>
+                    {/* <button onClick={() => navigate(`/chat/${freelancer.userId}`)}>Contact</button> */}
                 </div>
             </div>
 

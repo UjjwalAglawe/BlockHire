@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
+import ConnectMetaMask from "../Components/Metamask/ConnectMetamask";
 
 const Profile = ({ contract }) => {
   const { currentUser } = useSelector((state) => state.user);
@@ -66,6 +67,13 @@ const Profile = ({ contract }) => {
           >
             Contracts
           </li>
+          
+          <li
+            className="cursor-pointer text-blue-600 hover:text-blue-800 transition"
+            onClick={()=>navigate("/allchats")}
+          >
+            Messages
+          </li>
         </ul>
       </div>
 
@@ -92,7 +100,7 @@ const Profile = ({ contract }) => {
               {/* Name & MetaMask Address */}
               <div className="mt-5 sm:mt-0 sm:ml-6 flex-grow">
                 <h1 className="text-3xl font-bold text-gray-800">{currentUser.name}</h1>
-                <p className="text-gray-700">{currentUser.metamaskAddress || "MetaMask Not Connected"}</p>
+                <p className="text-gray-700">{<ConnectMetaMask/>}</p>
               </div>
             </div>
           </div>

@@ -1,5 +1,20 @@
 import React from "react";
 import { useSelector } from 'react-redux';
+import { useNavigate } from "react-router-dom";
+// import { useSelector } from "react-redux";
+
+const ChatButton = ({ clientId }) => {
+  const navigate = useNavigate();
+  const { currentUser } = useSelector((state) => state.user);
+
+  const openChat = () => {
+    navigate(`/chat/${clientId}`);
+    // navigate(`/chat/${currentUser.freelancer.id}`);
+  };
+
+  return <button onClick={openChat}>Chat with Client</button>;
+};
+
 
 function FreelancerDashboard() {
   const { currentUser } = useSelector((state) => state.user);
@@ -35,6 +50,7 @@ function FreelancerDashboard() {
               <span className="mr-2 font-medium">Location:</span>
               {currentUser.location}
             </div>
+            <ChatButton clientId={2}/>
             <div className="flex mt-2 space-x-2">
               {currentUser.languages?.map((lang, index) => (
                 <span key={index} className="px-2 py-1 bg-gray-100 rounded-md">
@@ -85,6 +101,7 @@ function FreelancerDashboard() {
           <p>
             <span className="font-semibold">Deadline:</span> {currentUser.active_contract.deadline}
           </p>
+          
         </div>
       )}
     </div>
