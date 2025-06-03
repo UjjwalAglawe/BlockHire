@@ -20,12 +20,14 @@ const CreateContract = ({ contract }) => {
   const { freelancerid: freelancerId } = useParams();
 
   const [freelancerData,setFreelancerData]=useState();
-  async function getFreelancerDetails() {
-    const response = await fetch(`/api/freelancers/${freelancerId}`);
-    const data = await response.json();
-    setFreelancerData(data.data);
-    console.log("Free det",freelancerData);
-  }
+ async function getFreelancerDetails() {
+  const response = await fetch(`/api/freelancersUser/${freelancerId}`);
+  const data = await response.json();
+  setFreelancerData(data.data);
+  console.log("Free det", data.data.metamaskAddress);
+  setFreelancer(data.data.metamaskAddress);
+}
+
   // Function to add an abstract detail (task)
 
   const { currentUser } = useSelector((state) => state.user);
@@ -112,13 +114,13 @@ const CreateContract = ({ contract }) => {
         className="w-full p-3 mb-3 rounded-lg bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500 outline-none"
       /> */}
 
-      <input
+      {/* <input
         type="text"
         placeholder="Freelancer Address"
         value={freelancer}
         onChange={(e) => setFreelancer(e.target.value)}
         className="w-full p-3 mb-3 rounded-lg bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500 outline-none"
-      />
+      /> */}
 
       <input
         type="text"
@@ -201,7 +203,7 @@ const CreateContract = ({ contract }) => {
       >
         {loading ? "Creating..." : "Create Project"}
       </button>
-      <button onClick={getFreelancerDetails}>HERE</button>
+      {/* <button onClick={getFreelancerDetails}>HERE</button> */}
     </div>
   );
 };

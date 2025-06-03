@@ -50,7 +50,7 @@ exports.getAllFreelancers = async (req, res) => {
             updatedAt: freelancer.updatedAt
         }));
         console.log("send");
-        
+
         return res.status(200).json({
             success: true,
             data: formattedFreelancers,
@@ -82,7 +82,7 @@ exports.getFreelancerById = async (req, res) => {
             include: {
                 user: {
                     select: {
-                        id:true,
+                        id: true,
                         name: true,
                         email: true,
                         metamaskAddress: true
@@ -136,3 +136,24 @@ exports.getFreelancerById = async (req, res) => {
         });
     }
 };
+
+exports.getFreelancerByUserId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const freelancer = await prisma.freelancer.findUnique({ where: { userId: parseInt(id) } });
+        if (!freelancer) {
+            return res.status(404).json({
+                success: false,
+                message: "Freelancer not found."
+            });
+        }
+        return res.json({
+            success: true,
+            data: freelancer
+        })
+
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
