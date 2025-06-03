@@ -33,16 +33,19 @@ exports.signup = async (req, res, next) => {
 
 exports.signin = async (req, res, next) => {
     const { email, password } = req.body;
-
+    
     try {
         const validUser = await prisma.user.findUnique({ where: { email } });
-
+        
         if (!validUser) {
+            console.log("user not found");
             return res.status(404).json({
                 success: false,
                 message: "User not found",
             });
         }
+        console.log("Incoming password:", password);
+        console.log("Stored hash:", validUser.password);
 
         const validPassword = bcryptjs.compareSync(password, validUser.password);
         if (!validPassword) {

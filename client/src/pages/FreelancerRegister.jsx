@@ -370,9 +370,9 @@ const FreelancerSignUp = () => {
         expectations: [],
         education: "",
         experience: "",
-        portfolio_url: "",
+        portfolioUrl: "",
         hourly_rate: "",
-        metamask_address: "",
+        metamaskAddress: "",
         photoUrl: "",
         skills: [],
         languages: [],
@@ -531,9 +531,9 @@ const FreelancerSignUp = () => {
     { label: "Bio", field: "bio", type: "textarea", info: "Tell about yourself." },
     { label: "Education", field: "education", type: "text", info: "What is your specialization?" },
     { label: "Experience", field: "experience", type: "text", info: "Experience in months or years." },
-    { label: "Portfolio URL", field: "portfolio_url", type: "text", info: "Share your portfolio URL to help clients learn more about you." },
+    { label: "Portfolio URL", field: "portfolioUrl", type: "text", info: "Share your portfolio URL to help clients learn more about you." },
     { label: "Hourly Rate ($)", field: "hourly_rate", type: "number", info: "Your hourly charges in USD." },
-    { label: "MetaMask Address", field: "metamask_address", type: "text", info: "Add your MetaMask address to connect with clients and receive payments securely." },
+    { label: "MetaMask Address", field: "metamaskAddress", type: "text", info: "Add your MetaMask address to connect with clients and receive payments securely." },
     { label: "Country", field: "country", type: "text", info: "Add the name of your country." }
 ].map(({ label, field, type, info }) => (
     <div className="my-4 w-full mb-2" key={field}>

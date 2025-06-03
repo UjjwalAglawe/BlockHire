@@ -1,8 +1,10 @@
-import { useState ,useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import { Route, Routes } from "react-router-dom";
 
 import Layout from './Layout.jsx';
 import SliderLayout from './SliderLayout.jsx';
+import UserDashboardLayout from './UserDashboardLayout.jsx';
+
 
 // Components
 import FreelancerCard from './Components/Freelancer_ProfilePage/FreelancerCard.jsx';
@@ -24,60 +26,67 @@ import { initializeContract } from './Components/Contract/initialize.js';
 import CreateContract from './Components/Contract/CreateContract.jsx';
 import Chatting from './Components/Chat/Chatting.jsx';
 import Allchat from './Components/Chat/Allchat.jsx';
+import FetchContracts from './Components/Contract/FetchContract.jsx';
 
 function App() {
-    // Regular User Example
+  // Regular User Example
 
-    const [contract, setContract] = useState(null);
+  const [contract, setContract] = useState(null);
 
-    useEffect(() => {
-        const loadContract = async () => {
-          try {
-            const instance = await initializeContract();
-            setContract(instance);
-          } catch (error) {
-            console.error("Error initializing contract:", error);
-          }
-        };
-        loadContract();
-      }, []);
+  useEffect(() => {
+    const loadContract = async () => {
+      try {
+        const instance = await initializeContract();
+        setContract(instance);
+      } catch (error) {
+        console.error("Error initializing contract:", error);
+      }
+    };
+    loadContract();
+  }, []);
 
-    return (
-        <Routes>
-            <Route path='/' element={<Layout />}>
-                <Route index element={<Home />} />
-                <Route path='about' element={<AboutUs />} />
-                <Route path='freelancers' element={<FreelancerCard />} />
-                <Route path='userprofile' element={<Profile contract={contract}/>} />
-                <Route path='allchats' element={<Allchat />} />
+  return (
+    <Routes>
+      <Route path='/' element={<Layout />}>
+        <Route index element={<Home />} />
+        <Route path='about' element={<AboutUs />} />
+        <Route path='freelancers' element={<FreelancerCard />} />
 
-                {/* CHANGE ACCORDING TO FREELANCER CURRENTLY STATIC */}
-                <Route path='freelancerprofile' element={<FreelancerProfile />} />
-                <Route path='freelancerwork/:id' element={<FreelancerWork />} />
-                <Route path='sidebar' element={<Sidebar />} />
-                {/* <Route path='dashboard' element={<FreelancerDashboard />} /> */}
-            </Route>
+        <Route element={<UserDashboardLayout contract={contract} />}>
+          <Route path='userprofile' element={<Profile />} /> {/* Removed contract prop */}
+          <Route path='allchats' element={<Allchat />} />
+          <Route path='contracts' element={<FetchContracts contract={contract} />} /> {/* New route */}
+            <Route path="deal/create/:freelancerid" element={<CreateContract contract={contract} />} />
 
-            {/* SliderLayout Routes */}
-            <Route path="/freelancerprofile" element={<SliderLayout />}>
-                <Route path='' index element={<FreelancerDashboard />} />
-                <Route path='projects' element={<FreelancerProjects />} />
-                <Route path='editprofile' element={<EditProfile />} />
-                <Route path='addprojects' element={<FreelancerAddProjects />} />
-                <Route path='allchats' element={<Allchat />} />
-                <Route path='contract' element={<ContractPage contract={contract} />} />
-            </Route>
-            
-            <Route path="/deal" element={<SliderLayout />}>
-                <Route path='create' index element={<CreateContract contract={contract}/>} />
-            </Route>
+        </Route>
 
-            <Route path='signin' element={<SignInPage />} />
-            <Route path='freelancerRegister/:id' element={<FreelancerRegister />} />
-            <Route path='signup' element={<SignUpPage />} />
-            <Route path='chat/:id' element={<Chatting />} />
-        </Routes>
-    );
+        {/* CHANGE ACCORDING TO FREELANCER CURRENTLY STATIC */}
+        <Route path='freelancerprofile' element={<FreelancerProfile />} />
+        <Route path='freelancerwork/:id' element={<FreelancerWork />} />
+        <Route path='sidebar' element={<Sidebar />} />
+        {/* <Route path='dashboard' element={<FreelancerDashboard />} /> */}
+      </Route>
+
+      {/* SliderLayout Routes */}
+      <Route path="/freelancerprofile" element={<SliderLayout />}>
+        <Route path='' index element={<FreelancerDashboard />} />
+        <Route path='projects' element={<FreelancerProjects />} />
+        <Route path='editprofile' element={<EditProfile />} />
+        <Route path='addprojects' element={<FreelancerAddProjects />} />
+        <Route path='allchats' element={<Allchat />} />
+        <Route path='contract' element={<ContractPage contract={contract} />} />
+      </Route>
+
+      {/* <Route path="/deal">
+        <Route path='create' index element={<CreateContract contract={contract} />} />
+      </Route> */}
+
+      <Route path='signin' element={<SignInPage />} />
+      <Route path='freelancerRegister/:id' element={<FreelancerRegister />} />
+      <Route path='signup' element={<SignUpPage />} />
+      <Route path='chat/:id' element={<Chatting />} />
+    </Routes>
+  );
 }
 
 export default App;

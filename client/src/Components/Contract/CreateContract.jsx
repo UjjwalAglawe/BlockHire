@@ -1,8 +1,10 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 // import uploadToPinata from "../../uploadImg"; // Function to upload JSON to IPFS
 import { useSelector } from "react-redux";
 import uploadPinata from "./uploadPinata";
+import { useParams } from "react-router-dom";
+
 
 const CreateContract = ({ contract }) => {
   const [clientId, setClientId] = useState("");
@@ -15,13 +17,25 @@ const CreateContract = ({ contract }) => {
   const [abstractDetailsList, setAbstractDetailsList] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const { freelancerid: freelancerId } = useParams();
+
+  const [freelancerData,setFreelancerData]=useState();
+  async function getFreelancerDetails() {
+    const response = await fetch(`/api/freelancers/${freelancerId}`);
+    const data = await response.json();
+    setFreelancerData(data.data);
+    console.log("Free det",freelancerData);
+  }
   // Function to add an abstract detail (task)
 
-  const {currentUser} = useSelector((state)=> state.user);
+  const { currentUser } = useSelector((state) => state.user);
   useEffect(() => {
     if (currentUser?.id) {
       setClientId(currentUser.id);
     }
+    getFreelancerDetails();
+    
+    
   }, [currentUser]);
 
   const addAbstractDetail = () => {
@@ -52,15 +66,15 @@ const CreateContract = ({ contract }) => {
       const deadlineTimestamp = Math.floor(new Date(projectDeadline).getTime() / 1000);
 
       // Upload deal details to IPFS
-      const dealDetails = { projectName, projectDescription, projectDeadline, totalPrice,clientId,deadlineTimestamp  };
+      const dealDetails = { projectName, projectDescription, projectDeadline, totalPrice, clientId, deadlineTimestamp };
       const dealURI = await uploadPinata(dealDetails);
 
       // Upload abstract details array to IPFS
       const abstractURI = await uploadPinata({ projectName, abstractDetails: abstractDetailsList });
 
-      console.log("Deal url",dealURI);
-      console.log("Abstract url",abstractURI);
-      
+      console.log("Deal url", dealURI);
+      console.log("Abstract url", abstractURI);
+
       if (!dealURI || !abstractURI) {
         alert("Failed to upload details to IPFS!");
         setLoading(false);
@@ -187,6 +201,7 @@ const CreateContract = ({ contract }) => {
       >
         {loading ? "Creating..." : "Create Project"}
       </button>
+      <button onClick={getFreelancerDetails}>HERE</button>
     </div>
   );
 };

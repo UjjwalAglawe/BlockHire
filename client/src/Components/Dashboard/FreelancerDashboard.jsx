@@ -27,7 +27,7 @@ function FreelancerDashboard() {
         <div className="flex mb-6">
           <div className="w-[15%] h-[15%] motion-preset-pop motion-duration-250">
             <img
-              src={currentUser.freelancer?.imgurl || "https://ivory-payable-firefly-160.mypinata.cloud/ipfs/bafkreidr4fgyg667si537yahtebeloo2mkhxkqzxmsfphk5fporu2ojbae"}
+              src={currentUser.freelancer?.photoUrl || "https://ivory-payable-firefly-160.mypinata.cloud/ipfs/bafkreidr4fgyg667si537yahtebeloo2mkhxkqzxmsfphk5fporu2ojbae"}
               alt={currentUser.name}
               className="rounded-full w-32 h-32 object-cover"
             />

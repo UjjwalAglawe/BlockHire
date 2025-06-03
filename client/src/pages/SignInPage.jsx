@@ -27,16 +27,18 @@ import { registerFreelancerSuccess } from '../reducer/user/freelancerSlice';
 
         const handleSubmit = async (e) => {
             e.preventDefault();
-            console.log("first")
+            console.log("first");
             try {
                 dispatch(signInStart());
-        
+                console.log("before axios");
+                
                 const res = await axios.post('/api/auth/signin', formData, {
                     headers: {
                         "Content-Type": "application/json",
                     },
                     withCredentials: true,
                 });
+                console.log("after axios");
         
                 console.log(res.data);
         
