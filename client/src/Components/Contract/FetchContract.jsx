@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { ethers } from "ethers";
 
-const FetchContracts = ({ contract }) => {
+const FetchContracts = ({ contract, isFree }) => {
   const { currentUser } = useSelector((state) => state.user);
   const [contracts, setContracts] = useState([]);
   const [visibleIndex, setVisibleIndex] = useState(null);
@@ -22,12 +22,26 @@ const FetchContracts = ({ contract }) => {
   useEffect(() => {
     const fetchContracts = async () => {
       if (!contract || !currentUser) return;
+      console.log("fetching");
 
       try {
-        const clientContracts = await contract.getProjectsByClient(currentUser.id);
+        let Allcontracts;
+        if (isFree) {
+          console.log(currentUser.freelancer.id);
+          const FreelancerContracts = await contract.getProjectsByFreelancer(currentUser.freelancer.metamaskAddress);
+          
+          Allcontracts = FreelancerContracts;
+          
+        }
+        else {
+          
+          const clientContracts = await contract.getProjectsByClient(currentUser.id);
+          console.log(currentUser.id);
+          Allcontracts=clientContracts;
+        }
 
         const fetched = await Promise.all(
-          clientContracts.map(async (c) => {
+          Allcontracts.map(async (c) => {
             try {
               const res = await fetch(c.dealURI);
               const details = await res.json();

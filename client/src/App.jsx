@@ -56,7 +56,7 @@ function App() {
           <Route path='userprofile' element={<Profile />} /> {/* Removed contract prop */}
           <Route path='allchats' element={<Allchat />} />
           <Route path='contracts' element={<FetchContracts contract={contract} />} /> {/* New route */}
-            <Route path="deal/create/:freelancerid" element={<CreateContract contract={contract} />} />
+            <Route path="deal/create/:freelancerid" element={<CreateContract contract={contract} isFree={false}/>} />
 
         </Route>
 
@@ -74,7 +74,7 @@ function App() {
         <Route path='editprofile' element={<EditProfile />} />
         <Route path='addprojects' element={<FreelancerAddProjects />} />
         <Route path='allchats' element={<Allchat />} />
-        <Route path='contract' element={<ContractPage contract={contract} />} />
+        <Route path='contract' element={<FetchContracts contract={contract} isFree={true}/>} />
       </Route>
 
       {/* <Route path="/deal">
