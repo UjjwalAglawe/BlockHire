@@ -1,8 +1,9 @@
 import { ethers } from "ethers";
 import { freelancing_abi } from "./FreelancingABI";
 
-const CONTRACT_ADDRESS = "0x3A5CeB9Bc2D6FdfE3c492C1E80AAFd2717e26784";
 // const CONTRACT_ADDRESS = "0x76C93e693A84B08A9771511580559F85f0f0AB0f";
+// const CONTRACT_ADDRESS = "0x3A5CeB9Bc2D6FdfE3c492C1E80AAFd2717e26784";
+const CONTRACT_ADDRESS = "0x8030d2d9Aaec20e2B545faE29a126BFf3C61FA7B";
 
 export const initializeContract = async () => {
   try {

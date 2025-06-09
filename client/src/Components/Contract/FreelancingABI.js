@@ -1,5 +1,51 @@
 export const freelancing_abi=[
 	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "projectId",
+				"type": "uint256"
+			}
+		],
+		"name": "cancelProject",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_clientId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_freelancer",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "_dealURI",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_abstractURI",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_totalAmount",
+				"type": "uint256"
+			}
+		],
+		"name": "createProject",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -35,25 +81,6 @@ export const freelancing_abi=[
 			}
 		],
 		"name": "DisputeResolved",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "projectId",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "PaymentDeposited",
 		"type": "event"
 	},
 	{
@@ -156,42 +183,14 @@ export const freelancing_abi=[
 				"internalType": "uint256",
 				"name": "projectId",
 				"type": "uint256"
-			}
-		],
-		"name": "cancelProject",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_clientId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "_freelancer",
-				"type": "address"
 			},
 			{
 				"internalType": "string",
-				"name": "_dealURI",
+				"name": "reason",
 				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_abstractURI",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_totalAmount",
-				"type": "uint256"
 			}
 		],
-		"name": "createProject",
+		"name": "raiseDispute",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -204,9 +203,58 @@ export const freelancing_abi=[
 				"type": "uint256"
 			}
 		],
-		"name": "depositInitialPayment",
+		"name": "releasePayment",
 		"outputs": [],
 		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "projectId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "winner",
+				"type": "address"
+			}
+		],
+		"name": "resolveDispute",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "projectId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "newDealURI",
+				"type": "string"
+			}
+		],
+		"name": "updateProjectDetails",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "projectId",
+				"type": "uint256"
+			}
+		],
+		"name": "withdrawDisputedFunds",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -411,86 +459,6 @@ export const freelancing_abi=[
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "projectId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "reason",
-				"type": "string"
-			}
-		],
-		"name": "raiseDispute",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "projectId",
-				"type": "uint256"
-			}
-		],
-		"name": "releasePayment",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "projectId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "winner",
-				"type": "address"
-			}
-		],
-		"name": "resolveDispute",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "projectId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "newDealURI",
-				"type": "string"
-			}
-		],
-		"name": "updateProjectDetails",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "projectId",
-				"type": "uint256"
-			}
-		],
-		"name": "withdrawDisputedFunds",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	}
 ]

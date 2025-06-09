@@ -19,34 +19,65 @@ const FetchContracts = ({ contract, isFree }) => {
     }
   };
 
+  const handleReleasePayment = async (projectId) => {
+  try {
+    // Fetch project details from the contract
+    const project = await contract.projects(projectId);
+    const totalAmount = project.totalAmount;
+    const depositedAmount = project.depositedAmount;
+
+    // Calculate the remaining amount (in wei)
+    const remainingAmount = totalAmount.sub(depositedAmount);
+
+    // Call releasePayment with remaining 70% if required
+    const tx = await contract.releasePayment(projectId, {
+      value: remainingAmount // if 0, no extra ETH is sent
+    });
+
+    await tx.wait();
+    alert("Payment released successfully.");
+  } catch (err) {
+    console.error("Failed to release payment:", err);
+    alert("Failed to release payment. " + (err?.data?.message || err.message));
+  }
+};
+
+
+  const handleUpdateProject = async (projectId) => {
+    const newDealURI = prompt("Enter new Deal URI:");
+    if (!newDealURI) return;
+
+    try {
+      const tx = await contract.updateProjectDetails(projectId, newDealURI);
+      await tx.wait();
+      alert("Project updated successfully.");
+    } catch (err) {
+      console.error("Failed to update project:", err);
+      alert("Failed to update project.");
+    }
+  };
+
   useEffect(() => {
     const fetchContracts = async () => {
       if (!contract || !currentUser) return;
-      console.log("fetching");
+      console.log("Fetching contracts...");
 
       try {
-        let Allcontracts;
+        let allContracts;
         if (isFree) {
-          console.log(currentUser.freelancer.id);
-          const FreelancerContracts = await contract.getProjectsByFreelancer(currentUser.freelancer.metamaskAddress);
-          
-          Allcontracts = FreelancerContracts;
-          
-        }
-        else {
-          
-          const clientContracts = await contract.getProjectsByClient(currentUser.id);
-          console.log(currentUser.id);
-          Allcontracts=clientContracts;
+          allContracts = await contract.getProjectsByFreelancer(currentUser.freelancer.metamaskAddress);
+        } else {
+          allContracts = await contract.getProjectsByClient(currentUser.id);
         }
 
         const fetched = await Promise.all(
-          Allcontracts.map(async (c) => {
+          allContracts.map(async (c, i) => {
             try {
               const res = await fetch(c.dealURI);
               const details = await res.json();
 
               return {
+                projectId: i + 1, // Assuming smart contract projects are sequentially stored
                 projectName: details.projectName || "Unnamed Project",
                 projectDescription: details.projectDescription || "No description",
                 projectDeadline: new Date(details.deadlineTimestamp * 1000).toDateString(),
@@ -76,10 +107,7 @@ const FetchContracts = ({ contract, isFree }) => {
       <h2 className="text-2xl font-bold text-gray-800 mb-4">Your Contracts</h2>
       <ul className="space-y-6">
         {contracts.map((c, idx) => (
-          <li
-            key={idx}
-            className="p-5 border border-gray-300 rounded-md bg-white shadow-md"
-          >
+          <li key={idx} className="p-5 border border-gray-300 rounded-md bg-white shadow-md">
             <p className="font-semibold text-lg text-gray-900">Project Name: {c.projectName}</p>
             <p className="text-gray-700 mt-1">Description: {c.projectDescription}</p>
             <p className="text-gray-700">Deadline: {c.projectDeadline}</p>
@@ -91,6 +119,23 @@ const FetchContracts = ({ contract, isFree }) => {
             >
               Get Details
             </button>
+
+            {!isFree && (
+              <div className="mt-4 space-x-2">
+                <button
+                  onClick={() => handleReleasePayment(c.projectId)}
+                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg"
+                >
+                  Release Payment
+                </button>
+                <button
+                  onClick={() => handleUpdateProject(c.projectId)}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg"
+                >
+                  Update Project
+                </button>
+              </div>
+            )}
 
             {visibleIndex === idx && abstractDetails[idx] && (
               <div className="mt-4 p-4 bg-gray-100 rounded-lg border">

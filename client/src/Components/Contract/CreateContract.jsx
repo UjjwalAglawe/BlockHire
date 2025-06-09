@@ -19,14 +19,14 @@ const CreateContract = ({ contract }) => {
 
   const { freelancerid: freelancerId } = useParams();
 
-  const [freelancerData,setFreelancerData]=useState();
- async function getFreelancerDetails() {
-  const response = await fetch(`/api/freelancersUser/${freelancerId}`);
-  const data = await response.json();
-  setFreelancerData(data.data);
-  console.log("Free det", data.data.metamaskAddress);
-  setFreelancer(data.data.metamaskAddress);
-}
+  const [freelancerData, setFreelancerData] = useState();
+  async function getFreelancerDetails() {
+    const response = await fetch(`/api/freelancersUser/${freelancerId}`);
+    const data = await response.json();
+    setFreelancerData(data.data);
+    console.log("Free det", data.data.metamaskAddress);
+    setFreelancer(data.data.metamaskAddress);
+  }
 
   // Function to add an abstract detail (task)
 
@@ -36,8 +36,8 @@ const CreateContract = ({ contract }) => {
       setClientId(currentUser.id);
     }
     getFreelancerDetails();
-    
-    
+
+
   }, [currentUser]);
 
   const addAbstractDetail = () => {
@@ -87,13 +87,19 @@ const CreateContract = ({ contract }) => {
       const contractWithSigner = contract.connect(signer);
 
       // Convert totalPrice to Wei
-      const priceInWei = ethers.utils.parseEther(totalPrice.toString());
+      // const priceInWei = ethers.utils.parseEther(totalPrice.toString());
 
       // Call smart contract function
-      const txn = await contractWithSigner.createProject(clientId, freelancer, dealURI, abstractURI, priceInWei);
-      await txn.wait();
+      // const txn = await contractWithSigner.createProject(clientId, freelancer, dealURI, abstractURI, priceInWei);
+      const priceInEther = totalPrice.toString();
+      const priceInWei = ethers.utils.parseEther(priceInEther);
+      const thirtyPercent = ethers.utils.parseEther((parseFloat(priceInEther) * 0.3).toString());
 
-      alert("Project Created Successfully!");
+      await contract.createProject(clientId, freelancer, dealURI, abstractURI, priceInWei, {
+        value: thirtyPercent
+      });
+
+      alert("Smart Contract is Created");
     } catch (error) {
       console.error("Error creating project:", error);
       alert("Transaction Failed!");
